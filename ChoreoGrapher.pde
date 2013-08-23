@@ -18,9 +18,6 @@ boolean isDrawable, isDrawing;
 boolean isPlayable, isTiming;
 
 // Rate at which we move across the screen
-// Is automatically calculated based on
-// duration of storyboard and width of graph
-float t = 0; 
 float tSpeed = 0;
 
 // Voices
@@ -46,19 +43,15 @@ Button loadAudio, loadClips;
 Button addVoice, removeVoice;
 
 // Highest point you can draw
-int mouseYMin = 50;
-
-enum Controls {
- TOPRIGHT, BOTTOMLEFT, LEFT 
-}
+int mouseYMin = 0;
 
 void setup() {
   size(640, 480); 
   loadAudio = new Button("Audio", Controls.TOPRIGHT, 1);
-  load = new Button("Load", Controls.TOPRIGHT, 2);
   save = new Button("Save", Controls.TOPRIGHT, 3);
-  play = new ToggleButton("Play", Controls.TOPRIGHT, "Stop");
-  clear = new Button("Clear", Controls.TOPRIGHT, 5);
+  load = new Button("Load", Controls.TOPRIGHT, 4);
+  play = new ToggleButton("Play", Controls.TOPRIGHT, 6, "Stop");
+  clear = new Button("Clear", Controls.TOPRIGHT, 7);
   removeVoice = new Button("Remove", Controls.BOTTOMLEFT, 1);
   addVoice = new Button("Add", Controls.BOTTOMLEFT, 2);
   loadClips = new Button("Clips", Controls.BOTTOMLEFT, 3);
@@ -116,6 +109,18 @@ void draw() {
   showButtons();
 }
 
+void reset() {
+  selected.reset();
+
+  // Allow drawing
+  // Don't allow playing
+  // Reset beats array to
+  // "hasn't been interpolated yet"
+  isDrawable = true;
+  isPlayable = false;
+  isTiming = false;
+}
+
 //////////////////////////////////////////
 //////////////////////////////////////////
 /////////////// INTERACTION //////////////
@@ -127,18 +132,10 @@ void mousePressed() {
   // Clear graph
   // Re-initialize beats array
   if (clear.isHovered() && !play.isOn) {
-    selected.reset();
+    reset();
+    }
 
-    // Allow drawing
-    // Don't allow playing
-    // Reset beats array to
-    // "hasn't been interpolated yet"
-    isDrawable = true;
-    isPlayable = false;
-    isTiming = false;
-  }
-
-  // Play or Stop storyboard
+    // Play or Stop storyboard
   else if (play.isHovered() && isPlayable) {
     if (!play.isOn) {
       initPlayer();
@@ -159,7 +156,7 @@ void mousePressed() {
     load();
 
   else if (loadAudio.isHovered())
-    loadAudio();
+    selectAudioFile();
 
   else if (addVoice.isHovered())
     addVoice();
@@ -168,7 +165,7 @@ void mousePressed() {
     removeVoice();
 
   else if (loadClips.isHovered())
-    selected.setClipsSource();
+    selected.selectClipsSource();
 
   else {
     for (Voice v : voices) {

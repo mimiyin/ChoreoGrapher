@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="lib/library/gstreamer-java.jar"/>
+	<classpathentry kind="lib" path="lib/library/jna.jar"/>
+	<classpathentry kind="lib" path="lib/library/video.jar"/>
+	<classpathentry kind="lib" path="library/jl1.0.jar"/>
+	<classpathentry kind="lib" path="library/jsminim.jar"/>
+	<classpathentry kind="lib" path="library/minim.jar"/>
+	<classpathentry kind="lib" path="library/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="library/tritonus_aos.jar"/>
+	<classpathentry kind="lib" path="library/tritonus_share.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

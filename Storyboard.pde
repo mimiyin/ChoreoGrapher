@@ -4,10 +4,17 @@ class Storyboard {
 
   Storyboard() {
   }
+  
+  void reset() {
+    for (Voice v : voices) {
+      v.reset();
+    }
+  }
 
   void pickVoice() {
     int sum = 0;
     for (Voice v : voices) {
+      v.run();
       sum += v.weight; 
       v.threshold = sum;
     }

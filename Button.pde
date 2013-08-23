@@ -6,19 +6,19 @@ class Button {
   int side, x, y;
   String label;
 
-  Button(String _label, Control c, int mult) {
+  Button(String _label, Controls c, int mult) {
     side = 50;
     if (c == Controls.TOPRIGHT) {
       x = width-((side + 10)*mult);
       y = side/4;
     }
-    else if(c == Controls.BOTTOMLEFT) {
+    else if (c == Controls.BOTTOMLEFT) {
       x = (side + 10)*mult;
       y = height - side/4;
     }
-    else if(c == Controls.SIDEBAR) {
+    else if (c == Controls.SIDEBAR) {
       x = 50;
-      y = (height*mult) + 100
+      y = (height*mult) + 100;
     }
 
     label = _label;
@@ -34,10 +34,9 @@ class Button {
     fill(255);
     text(label, x+(side/2), y+(side/4));
   }
-  
+
   void update(String _label) {
     label = _label;
-    
   }
 
   boolean isHovered() {
@@ -53,8 +52,8 @@ class ToggleButton extends Button {
   String onLabel, offLabel;
   boolean isOn;
 
-  ToggleButton(String _label, int xMult, String _offLabel) {
-    super(_label, xMult);
+  ToggleButton(String _label, Controls c, int mult, String _offLabel) {
+    super(_label, c, mult);
     label = _label;
     onLabel = _label;
     offLabel = _offLabel;
@@ -69,8 +68,7 @@ class ToggleButton extends Button {
 }
 
 void initPlayer() {
-  sb.init();
-  t = firstBeatInd;
+  sb.reset();
   try {
     audio.cue(0);
     audio.play();
@@ -81,8 +79,6 @@ void initPlayer() {
 }
 void resetPlayer() {
   initPlayer();
-  drawDots();
-
   try {
     audio.pause();
   }
@@ -93,16 +89,29 @@ void resetPlayer() {
 
 void load() {
   // Pause drawing while we load the file
-  initialize();
-  selectInput("Load Graph", "loadBeats");
+  reset();
+  selectFolder("Load Graph", "load");
 }
 
-void loadBeats(File file) {
-  String[] savedBeats = loadStrings(file.getAbsolutePath());
-  beats = new Beat[savedBeats.length];
-  for (int i = 0; i < savedBeats.length; i++) {
-    String[] savedBeat = savedBeats[i].split(", ");
-    beats[i] = new Beat(Float.parseFloat(savedBeat[0]), Float.parseFloat(savedBeat[1]), Boolean.parseBoolean(savedBeat[2]));
+void load(File folder) {
+  // Clear voices
+  voices = new ArrayList<Voice>();
+
+  String path = folder.getAbsolutePath();
+  int numVoices = folder.listFiles().length;
+  String[] clips = loadStrings(path + "/clips.txt");
+
+  for (int i = 0; i < numVoices; i++) {
+    Voice v = new Voice(i.toString(), i);
+    voices.add(v);
+    String[] savedBeats = loadStrings(path + "/" + nf(i, 2) + ".txt");
+    beats = new Beat[savedBeats.length];
+    for (int i = 0; i < savedBeats.length; i++) {
+      String[] savedBeat = savedBeats[i].split(", ");
+      beats[i] = new Beat(Float.parseFloat(savedBeat[0]), Float.parseFloat(savedBeat[1]), Boolean.parseBoolean(savedBeat[2]));
+    }
+    v.loadBeats(beats);
+    v.loadClips(new File(clips[i]));
   }
 
   // Get ready to play
@@ -110,21 +119,30 @@ void loadBeats(File file) {
 }
 
 void save() {
-  selectOutput("Save This Graph", "saveBeats");
+  selectFolder("Save This Graph", "dump");
 }
 
-void saveBeats(File file) {
-  String[] savedBeats = new String[beats.length];
-  String concatenator = ", ";
-  for (int i = 0; i < beats.length; i++) {
-    Beat beat = beats[i];
-    String savedBeat = "" + beat.beat;
-    savedBeat += concatenator + beat.rawTempo;
-    savedBeat += concatenator + beat.isUserCreated;
-    savedBeats[i] = savedBeat;
+void dump(File folder) {
+  String path = folder.getAbsolutePath();
+
+  for (Voice v: voices) {
+    String[] savedBeats = new String[beats.length];
+    String concatenator = ", ";
+    Beat[] beatsToSave = v.getBeats();
+    for (int i = 0; i < beatsToSave.length; i++) {
+      Beat beat = beatsToSave[i];
+      String savedBeat = "" + beat.beat;
+      savedBeat += concatenator + beat.rawTempo;
+      savedBeat += concatenator + beat.isUserCreated;
+      savedBeats[i] = savedBeat;
+    }
+    println(file.getName());
+    saveStrings(path + "/" + nf(i, 2) + ".txt", savedBeats);
   }
-  println(file.getName());
-  saveStrings(file.getAbsolutePath(), savedBeats);
+}
+
+void selectAudioFile() {
+  selectOutput("Select Audio File", "loadAudio");
 }
 
 void loadAudio(File file) {
@@ -142,6 +160,21 @@ void addVoice() {
   turnOffVoices();
   // Select folder to load media
   voices.add(new Voice());
+}
+
+void removeVoice() {
+  // Must have at least 1 voice
+  if (voices.size() > 1)
+    return;
+
+  int index = voices.indexOf(selected);
+  voices.remove(index);
+  try {
+    changeVoice(voices.get(index));
+  }
+  finally {
+    changeVoice(voices.get(index-1));
+  }
 }
 
 void changeVoice(Voice v) {

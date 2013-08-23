@@ -1,4 +1,7 @@
-class Voice {
+import processing.core.*;
+import processing.video.*;
+
+public class Voice {
   boolean isSelected;
   Beat[] beats;
   int t;
@@ -181,4 +184,3 @@ class Voice {
     return lastBeatInd;
   }
 }
-

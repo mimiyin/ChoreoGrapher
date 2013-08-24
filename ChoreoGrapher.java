@@ -2,75 +2,77 @@ import processing.core.*;
 import processing.video.*;
 import ddf.minim.*;
 
+import java.util.*;
+import java.io.*;
+
 public class ChoreoGrapher extends PApplet {
 	
-
-	///////////////////////////
-	///////////////////////////
-	/////SETTINGS FOR YOU//////
-	///////////////////////////
-	///////////////////////////
-	float seconds = 90;
-	int fRate = 30;
-	int totalFrames = (int)seconds*fRate;
-	int maxNumberOfMedia = 1;
-
-
+	////////////////////////////
+	////////////////////////////
+	//////SETTINGS FOR YOU//////
+	////////////////////////////
+	////////////////////////////
+	public static float seconds = 90;
+	public static int fRate = 30;
+	public static int totalFrames = (int) seconds * fRate;
+	public static int maxNumberOfMedia = 1;
 
 	// Gatekeepers for drawing and playing modes
-	boolean isDrawable, isDrawing;
-	boolean isPlayable, isTiming;
-
-	// Rate at which we move across the screen
-	float tSpeed = 0;
+	public static boolean isDrawable = true;
+	public static boolean isDrawing = false;
+	public static boolean isPlayable = false;
+	public static boolean isTiming = false;
 
 	// Voices
-	ArrayList<Voice> voices;
-	Voice selected;
+	public static ArrayList<Voice> voices;
+	public static Voice selected;
 
 	// Managing moving through your content
-	Storyboard sb;
+	public static Storyboard sb;
 
 	// Your content
-	ArrayList<Movie> movies;
-	Minim minim;
-	AudioPlayer audio;
-
+	public static ArrayList<Movie> movies;
 
 	// Keeping track oftime
 	// elapsed since clicking
 	// Play button
-	float timer;
-	ToggleButton play;
-	Button clear, save, load;
-	Button loadAudio, loadClips;
-	Button addVoice, removeVoice;
-
+	public static float timer;
+	
 	// Highest point you can draw
-	int mouseYMin = 0;
+	public static int mouseYMin = 0;
+	
+	public static ToggleButton play;
+	public static Button clear, save, load;
+	public static Button loadAudio, loadClips;
+	public static Button addVoice, removeVoice;
+	
+	public static Minim minim;
+	public static AudioPlayer audio;
 
-	void setup() {
+	
+
+	public void setup() {
 	  size(640, 480); 
-	  loadAudio = new Button("Audio", Controls.TOPRIGHT, 1);
-	  save = new Button("Save", Controls.TOPRIGHT, 3);
-	  load = new Button("Load", Controls.TOPRIGHT, 4);
-	  play = new ToggleButton("Play", Controls.TOPRIGHT, 6, "Stop");
-	  clear = new Button("Clear", Controls.TOPRIGHT, 7);
-	  removeVoice = new Button("Remove", Controls.BOTTOMLEFT, 1);
-	  addVoice = new Button("Add", Controls.BOTTOMLEFT, 2);
-	  loadClips = new Button("Clips", Controls.BOTTOMLEFT, 3);
+	  loadAudio = new Button(this, "Audio", Controls.TOPRIGHT, 1);
+	  save = new Button(this, "Save", Controls.TOPRIGHT, 3);
+	  load = new Button(this, "Load", Controls.TOPRIGHT, 4);
+	  play = new ToggleButton(this, "Play", Controls.TOPRIGHT, 6, "Stop");
+	  clear = new Button(this, "Clear", Controls.TOPRIGHT, 7);
+	  removeVoice = new Button(this, "Remove", Controls.BOTTOMLEFT, 1);
+	  addVoice = new Button(this, "Add", Controls.BOTTOMLEFT, 2);
+	  loadClips = new Button(this, "Clips", Controls.BOTTOMLEFT, 3);
 
 	  imageMode(CENTER);
 	  frameRate(fRate);
 
 	  minim = new Minim(this);
-	  sb = new Storyboard();
+	  sb = new Storyboard(this);
 
 	  // Always start with at least one voice
-	  voices.add(new Voice("default", 0));
+	  voices.add(new Voice(this, "default", 0));
 	}
 
-	void draw() {
+	public void draw() {
 
 	  // Drawing the storyboard graph
 	  if (isDrawable) {
@@ -86,7 +88,7 @@ public class ChoreoGrapher extends PApplet {
 	    //Since beginning of storyboard
 	    String clock = "";
 	    int time = 0;
-	    time = int(timer/1000) + 1;
+	    time = parseInt(timer/1000) + 1;
 	    clock = time + "s";
 	    textAlign(CENTER);
 	    textSize(48);
@@ -130,7 +132,7 @@ public class ChoreoGrapher extends PApplet {
 	/////////////// INTERACTION //////////////
 	//////////////////////////////////////////
 	//////////////////////////////////////////
-	void mousePressed() {
+	public void mousePressed() {
 	  isDrawing = true;
 
 	  // Clear graph
@@ -179,7 +181,7 @@ public class ChoreoGrapher extends PApplet {
 	  }
 	}
 
-	void mouseReleased() {
+	public void mouseReleased() {
 	  isDrawing = false;
 	  if (isDrawable) {
 	    selected.interpolate();
@@ -189,7 +191,7 @@ public class ChoreoGrapher extends PApplet {
 	    isDrawable = true;
 	}
 
-	void mouseDragged() {
+	public void mouseDragged() {
 	  // ERASE
 	  if (isDrawable) {
 	    selected.erase();
@@ -200,7 +202,7 @@ public class ChoreoGrapher extends PApplet {
 	  m.read();
 	}
 
-	void selectVoiceEvent(Voice v) {
+	public static void selectVoiceEvent(Voice v) {
 	  selected = v;
 	}
 
@@ -214,4 +216,112 @@ public class ChoreoGrapher extends PApplet {
 	  removeVoice.display();
 	  loadClips.display();
 	}
+	
+	void initPlayer() {
+		  sb.reset();
+		  try {
+		    audio.cue(0);
+		    audio.play();
+		  }
+		  catch(Exception e) {
+		    println("No audio to play.");
+		  }
+		}
+		void resetPlayer() {
+		  initPlayer();
+		  try {
+		    audio.pause();
+		  }
+		  catch(Exception e) {
+		    println("No audio to pause.");
+		  }
+		}
+
+		void load() {
+		  // Pause drawing while we load the file
+		  reset();
+		  selectFolder("Load Graph", "load");
+		}
+
+		void load(File folder) {
+		  // Clear voices
+		  voices = new ArrayList<Voice>();
+
+		  String path = folder.getAbsolutePath();
+		  int numVoices = folder.listFiles().length;
+		  String[] clips = loadStrings(path + "/clips.txt");
+
+		  for (int i = 0; i < numVoices; i++) {
+		    Voice v = new Voice(this, Integer.toString(i), i);
+		    voices.add(v);
+		    String[] savedBeats = loadStrings(path + "/" + nf(i, 2) + ".txt");
+		    v.loadBeats(savedBeats);
+		    v.loadClips(new File(clips[i]));
+		  }
+
+		  // Get ready to play
+		  isPlayable = true;
+		}
+
+		void save() {
+		  selectFolder("Save This Graph", "dump");
+		}
+
+		void dump(File folder) {
+		  String path = folder.getAbsolutePath();
+
+		  for (int v= 0; v < voices.size(); v++) {
+			  Voice thisVoice = voices.get(v);
+			  thisVoice.dumpBeats(path, v);
+		  }
+		}
+
+		void selectAudioFile() {
+		  selectOutput("Select Audio File", "loadAudio");
+		}
+
+		void loadAudio(File file) {
+		  try {
+		    audio = minim.loadFile(file.getAbsolutePath());
+		    seconds = Math.round(audio.length()/1000);
+		    println("The audio is " + seconds + "s long.");
+		  }
+		  catch(Exception e) {
+		    println("No audio");
+		  }
+		}
+
+		void addVoice() {
+		  turnOffVoices();
+		  int index = voices.size();
+		  String name = "Voice " + index;
+		  voices.add(new Voice(this, name, index));
+		}
+
+		void removeVoice() {
+		  // Must have at least 1 voice
+		  if (voices.size() > 1)
+		    return;
+
+		  int index = voices.indexOf(selected);
+		  voices.remove(index);
+		  try {
+		    changeVoice(voices.get(index));
+		  }
+		  finally {
+		    changeVoice(voices.get(index-1));
+		  }
+		}
+
+		void changeVoice(Voice v) {
+		  turnOffVoices();
+		  v.toggle(true) ;
+		}
+
+		void turnOffVoices() {
+		  for (Voice voice : voices) {
+		    voice.toggle(false);
+		  }
+		}
+
 }

@@ -136,9 +136,10 @@ void dump(File folder) {
       savedBeat += concatenator + beat.isUserCreated;
       savedBeats[i] = savedBeat;
     }
-    println(file.getName());
     saveStrings(path + "/" + nf(i, 2) + ".txt", savedBeats);
   }
+  
+  
 }
 
 void selectAudioFile() {

@@ -23,10 +23,10 @@ public class Beat {
 		// Tempo values are mapped "on a curve" (natural log curve)
 		// Play with expMax and expMin to play with which part of the curve
 		// you'd like to map your values to
-		float max = seconds * 10;
+		float max = ChoreoGrapher.seconds * 10;
 		float expMin = -5;
 		float expMax = 2.5f;
-		float exp = PApplet.map(rawTempo, parent.height, mouseYMin, expMin, expMax);
+		float exp = PApplet.map(rawTempo, parent.height, ChoreoGrapher.mouseYMin, expMin, expMax);
 		float log = PApplet.exp(exp);
 		tempo = PApplet.map(log, PApplet.exp(expMin), PApplet.exp(expMax), 1, max);
 		// PApplet.println("Beat: " + beat + "\tRaw Tempo: " + rawTempo +

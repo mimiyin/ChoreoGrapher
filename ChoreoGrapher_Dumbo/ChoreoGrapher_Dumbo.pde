@@ -1,6 +1,7 @@
 import processing.video.*;
 import ddf.minim.*;
 
+float xPos;
 int fRate = 30;
 
 // Gatekeepers for drawing, playing and exporting modes
@@ -101,14 +102,16 @@ void draw() {
     stroke(255);
     fill(255);
     textSize(64);
+    textAlign(RIGHT);
     text(clock, width-textWidth/2-5, height-10);
     
     // XPOS
-    float xpos = sb.t + (sb.tSpeed*(sb.current.counter/sb.current.weight));
+    xPos = sb.t + (sb.tSpeed*sb.current.prog);
     
     textSize(12);
-    text("Clip " + int((sb.t-sb.startingAt)/10), xpos + 25, 100);    
-    line(xpos, 0, xpos, height);
+    textAlign(LEFT);
+    text("Clip " + int((sb.t-sb.startingAt)/10), xPos + 25, 100);    
+    line(xPos, 0, xPos, height);
   }
 
   showButtons();
@@ -185,7 +188,7 @@ boolean isOnScreen(PVector pos) {
 
 Beat drawEvent(float x, float y, boolean isUserCreated) {
   if (y < 0)
-    y = -height;
+    y = 0;
   x = constrain(x, 0, width);
   y = constrain(y, -height, height);
   return new Beat(x, y, isUserCreated);

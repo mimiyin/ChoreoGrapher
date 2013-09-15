@@ -8,7 +8,8 @@ class Storyboard {
   float t = width;
   float tSpeed = 10;
   float startingAt = 0;
-  float bubbleY = 0;
+
+  float duration = 90;
 
   Storyboard(PApplet parent) {
     minim = new Minim(parent);
@@ -22,37 +23,46 @@ class Storyboard {
   }
 
   void pickVoice() {
-    int sum = 0;
+    float sum = 0;
     t+=tSpeed;
     for (Voice v : voices) {
       if (v.button.hasBeats) {
         v.run();
         sum += v.weight; 
         v.threshold = sum;
-        println("VOICE: " + v.index + "\t" + v.threshold);
       }
     }
-    
-    for(Voice v : voices) {
-      v.button.label = int(Math.round(v.weight/sum))*100 + "%";  
-    }
-    
+
     float dart = random(sum);
+    float lowest = sum;
     for (Voice v : voices) {
-      if (dart < v.threshold) {
-        current = v;
-        current.toggleCheck(true);
-        if (current.hasClips)
-          current.pickClip();
-        break;
+      if (v.button.hasBeats) {
+        v.prob = (int)Math.round(100*v.weight/sum);
+        if (dart < v.threshold && v.threshold <= lowest) {
+          lowest = v.threshold;
+          current = v;
+        }
       }
-      //      else
-      //        current.toggleCheck(false);
     }
+
+    for (Voice v : voices) {
+      v.toggleCurrent(false);
+    }
+
+    current.toggleCurrent(true);
+
+    if (current.hasClips)
+      current.pickClip();
   }
 
   void run() {
     current.play();
+    for (Voice v : voices) {
+      if (v.button.hasBeats) {
+        v.display();
+        v.trackCurve();
+      }
+    }
   }
 
   void addAudio(String path) {

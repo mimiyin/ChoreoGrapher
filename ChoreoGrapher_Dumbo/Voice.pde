@@ -4,15 +4,16 @@ class Voice {
   Beat[] beats;
   String name;
   int index, counter;
-  float weight, threshhold;
-  int firstBeatInd, lastBeatInd, threshold;
+  float prog;
+  float weight, threshold, yPos;
+  int firstBeatInd, lastBeatInd;
   ArrayList<Movie> clips;
   Movie picked;
   ToggleButton button;
 
   color col;
-  
-  float dur = 90;
+  float diameter = 20;
+  int prob = 0;
 
   PApplet parent;
 
@@ -128,10 +129,10 @@ class Voice {
 
   void display() {
     for (Beat beat: beats) {
-      //if (beat.isUserCreated) {
+      if (beat.rawTempo > mouseYMin) {
         color currentCol = isCurrent ? color(red(col), green(col), blue(col)) : color(red(col), green(col), blue(col), 64);
         beat.display(currentCol);
-      //}
+      }
     }
   }
 
@@ -164,11 +165,12 @@ class Voice {
       picked.stop();
       picked = null;
     }
-    weight = beats[(int)Math.round(sb.t)].tempo;
+    Beat thisBeat = beats[(int)Math.round(sb.t)];
+    weight = thisBeat.tempo;
     counter = 0;
   }
 
-  void toggleCheck(boolean _isCurrent) {
+  void toggleCurrent(boolean _isCurrent) {
     isCurrent = _isCurrent;
   }
 
@@ -184,25 +186,33 @@ class Voice {
       image(picked, width/2, height/2, width, height);
     }
     else {
+      // Calculate progress
       counter++;
-      boolean isFadingIn = counter < dur/2;
-      float mult = map(counter, 0, weight, isFadingIn ? 0: 255, isFadingIn ? 255 : 0)/128;
+
+      boolean isFadingIn = counter < sb.duration/2;
+      float mult = map(counter, 0, sb.duration, isFadingIn ? 0: 255, isFadingIn ? 255 : 0)/128;
       background(red(col)*mult, green(col)*mult, blue(col)*mult);
-
-
-      textSize(48);
-      text("Motif " + name + " selected", width/2 + mouseXMin/2, height/2);
-
-      if (counter > (dur-20)) { 
-        textSize(16);
-        text("[ PICKING A MOTIF... ]", width/2 + mouseXMin/2, height/2-70);
-      }
+      textSize(64);
+      textAlign(LEFT);
+      text("Motif " + name + " selected", 10, height-10);
     }
+  }
 
-    if (isCurrent) {
+  void trackCurve() {
+    prog = counter/sb.duration;
+
+    // Calculate diameter
+    diameter = isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10);
+    yPos = beats[(int)xPos].rawTempo;
+    if (yPos > mouseYMin) {
+      stroke(255);
+      strokeWeight(10);
       fill(col);
-      sb.bubbleY = lerp(sb.bubbleY, (button.y+20), counter/(weight*10));
-      ellipse((button.x + button.side + 20), sb.bubbleY, 10, 10);
+      ellipse(xPos, yPos, diameter, diameter);
+      strokeWeight(1);
+      textSize(16);
+      fill(255);
+      text(prob + "%", xPos + 30, yPos);
     }
   }
 
@@ -211,7 +221,7 @@ class Voice {
       println("VOICE IS DONE!!!");
       return true;
     }
-    else if (counter > dur)
+    else if (counter > sb.duration)
       return true;
     else
       return false;

@@ -21,7 +21,7 @@ class Beat {
     float expMax = 2.5;
     float exp = map(rawTempo, height, mouseYMin, expMin, expMax);   
     float log = exp(exp);
-    tempo = map(log, exp(expMin), exp(expMax), 1, max);
+    tempo = map(log, exp(expMin), exp(expMax), 0, max);
     //println("Beat: " + beat + "\tRaw Tempo: " + rawTempo + "\tNatural Log: " + log + "\tTempo: " + tempo);
   }
 

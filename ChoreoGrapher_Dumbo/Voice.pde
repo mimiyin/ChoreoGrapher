@@ -1,5 +1,6 @@
 class Voice {
   boolean isCurrent;
+  boolean hasBeats;
   boolean hasClips;
   Beat[] beats;
   String name;
@@ -48,6 +49,7 @@ class Voice {
     }
 
     // Has no beats yet
+    hasBeats = false;
     button.setHasBeats(false);
   }
 
@@ -103,10 +105,13 @@ class Voice {
       beats[i] = thisBeat;
     }
 
-    if (firstBeatInd < sb.t)
+    if (firstBeatInd < sb.t) {
       sb.t = firstBeatInd;
+      sb.xPos = sb.t;
+    }
 
-    // Has beats now 
+    // Has beats now
+    hasBeats = true; 
     button.setHasBeats(true);
   }
 
@@ -130,7 +135,7 @@ class Voice {
   void display() {
     for (Beat beat: beats) {
       if (beat.rawTempo > mouseYMin) {
-        color currentCol = isCurrent ? color(red(col), green(col), blue(col)) : color(red(col), green(col), blue(col), 64);
+        color currentCol = isCurrent ? color(red(col), green(col), blue(col)) : color(red(col), green(col), blue(col), 8);
         beat.display(currentCol);
       }
     }
@@ -165,13 +170,15 @@ class Voice {
       picked.stop();
       picked = null;
     }
-    Beat thisBeat = beats[(int)Math.round(sb.t)];
+    Beat thisBeat = beats[(int)Math.round(sb.xPos)];
     weight = thisBeat.tempo;
-    counter = 0;
   }
 
   void toggleCurrent(boolean _isCurrent) {
     isCurrent = _isCurrent;
+    counter = 0;
+    if (isCurrent && hasClips )
+      pickClip();
   }
 
   void pickClip() {
@@ -198,21 +205,25 @@ class Voice {
     }
   }
 
+  void setProb(float sum) {
+    prob = int(100*weight/sum);
+  }
+
   void trackCurve() {
     prog = counter/sb.duration;
 
     // Calculate diameter
     diameter = isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10);
-    yPos = beats[(int)xPos].rawTempo;
+    yPos = beats[(int)sb.xPos].rawTempo;
     if (yPos > mouseYMin) {
       stroke(255);
       strokeWeight(10);
       fill(col);
-      ellipse(xPos, yPos, diameter, diameter);
+      ellipse(sb.xPos, yPos, diameter, diameter);
       strokeWeight(1);
       textSize(16);
       fill(255);
-      text(prob + "%", xPos + 30, yPos);
+      text(prob + "%", sb.xPos + 30, yPos);
     }
   }
 

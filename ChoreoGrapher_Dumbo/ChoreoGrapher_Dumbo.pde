@@ -1,7 +1,6 @@
 import processing.video.*;
 import ddf.minim.*;
 
-float xPos;
 int fRate = 30;
 
 // Gatekeepers for drawing, playing and exporting modes
@@ -103,15 +102,7 @@ void draw() {
     fill(255);
     textSize(64);
     textAlign(RIGHT);
-    text(clock, width-textWidth/2-5, height-10);
-    
-    // XPOS
-    xPos = sb.t + (sb.tSpeed*sb.current.prog);
-    
-    textSize(12);
-    textAlign(LEFT);
-    text("Clip " + int((sb.t-sb.startingAt)/10), xPos + 25, 100);    
-    line(xPos, 0, xPos, height);
+    text(clock, width-10, height-10);    
   }
 
   showButtons();

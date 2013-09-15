@@ -32,7 +32,7 @@ int mouseYMin = 50;
 int mouseXMin = 100;
 
 void setup() {
-  size(800, 600);
+  size(displayWidth, displayHeight);
 
   play = new ToggleButton("Play", menus[0], 1, "Stop");
   clearAll = new Button("Clear All", menus[0], 2);

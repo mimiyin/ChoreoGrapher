@@ -9,18 +9,14 @@ class Button {
   color col = off;
   color hasBeatsCol = off;
 
-  Button(String _label, Controls c, int mult) {
+  Button(String _label, String menu, int mult) {
 
     side = 85;
-    if (c == Controls.TOPRIGHT) {
+    if (menu == "CONTROLS") {
       x = width-((side + 10)*mult);
       y = side/4;
     }
-    else if (c == Controls.BOTTOMLEFT) {
-      x = (side)*mult + 5;
-      y = height - 40;
-    }
-    else if (c == Controls.SIDEBAR) {
+    else if (menu == "MOTIFS") {
       x = 10;
       y = (int)(side*mult*.67) + 100;
       hasBeatsCol = colors[mult];
@@ -58,8 +54,8 @@ class ToggleButton extends Button {
   String onLabel, offLabel;
   boolean isOn, hasBeats;
 
-  ToggleButton(String _label, Controls c, int mult, String _offLabel) {
-    super(_label, c, mult);
+  ToggleButton(String _label, String menu, int mult, String _offLabel) {
+    super(_label, menu, mult);
     label = _label;
     onLabel = _label;
     offLabel = _offLabel;
@@ -131,38 +127,6 @@ void dump(File folder) {
     saveStrings(path + "/" + nf(v.index, 2) + ".txt", savedBeats);
   }
 }
-
-void setAudioFile() {
-  selectOutput("Select Audio File", "loadAudio");
-}
-
-void loadAudio(File file) {
-  if (file == null) {
-    println("Loading audio file cancelled.");  
-    return;
-  }
-
-  try {
-    sb.addAudio(file.getAbsolutePath());
-  }
-  catch(Exception e) {
-    println("No audio");
-  }
-}
-
-void setExportFolder() {
-  selectFolder("Select Media Folder", "setExportPath");
-}
-
-void setExportPath(File folder) {
-  if (folder == null) {
-    println("Exporting data canceled.");
-    return;
-  }
-  exportPath = folder.getAbsolutePath();
-  println(exportPath);
-}
-
 
 void addVoice() {
   turnOffVoices();

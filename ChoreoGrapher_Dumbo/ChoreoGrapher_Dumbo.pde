@@ -1,6 +1,3 @@
-import processing.video.*;
-import ddf.minim.*;
-
 int fRate = 30;
 
 // Gatekeepers for drawing, playing and exporting modes
@@ -8,6 +5,10 @@ boolean isDrawable, isDrawing;
 boolean isPlayable, isExporting;
 String exportPath;
 
+// Controls
+String [] menus = { 
+  "CONTROLS", "MOTIFS"
+};
 
 // Voices
 ArrayList<Voice> voices;
@@ -18,12 +19,6 @@ Voice selected;
 
 // Managing moving through your content
 Storyboard sb;
-
-// Your content
-ArrayList<Movie> movies;
-Minim minim;
-AudioPlayer audio;
-
 
 // Keeping track oftime
 // elapsed since clicking
@@ -39,15 +34,14 @@ int mouseXMin = 100;
 void setup() {
   size(800, 600);
 
-  play = new ToggleButton("Play", Controls.TOPRIGHT, 1, "Stop");
-  clearAll = new Button("Clear All", Controls.TOPRIGHT, 2);
-  clear = new Button("Clear", Controls.TOPRIGHT, 3);
+  play = new ToggleButton("Play", menus[0], 1, "Stop");
+  clearAll = new Button("Clear All", menus[0], 2);
+  clear = new Button("Clear", menus[0], 3);
 
   imageMode(CENTER);
   frameRate(fRate);
 
-  minim = new Minim(this);
-  sb = new Storyboard(this);
+  sb = new Storyboard();
   voices = new ArrayList<Voice>();
 
   reset(true);
@@ -102,7 +96,7 @@ void draw() {
     fill(255);
     textSize(64);
     textAlign(RIGHT);
-    text(clock, width-10, height-10);    
+    text(clock, width-10, height-10);
   }
 
   showButtons();
@@ -191,8 +185,8 @@ void playEvent() {
   isPlayable = true;
   isDrawable = false;
   startTime = millis();
+  selected.toggle(false);
   sb.startEvent();
-  selected.button.toggle(false);
 }
 
 void pauseEvent() {
@@ -211,26 +205,7 @@ void selectVoiceEvent(Voice v) {
   selected = v;
 }
 
-void loadClipsEvent(File folder) {
-  if (folder == null) {
-    println("Loading images/movies cancelled.");  
-    return;
-  }
 
-  selected.initClips();
-
-  File [] files = folder.listFiles();
-  // Try to load images
-  for (int i = 0; i < files.length; i++) {
-    String filename = files[i].getName().toLowerCase();
-    String path = files[i].getAbsolutePath();
-    if (filename.matches(".+\\.mov$")) {
-      selected.addClip(path);
-    }
-  }
-  // Update button label with folder name
-  selected.button.update(folder.getName());
-}
 
 void showButtons() {
   play.display();
@@ -244,10 +219,5 @@ void showButtons() {
   for (Voice v : voices) {
     v.button.display();
   }
-}
-
-void movieEvent(Movie m) {
-  if (m.available())
-    m.read();
 }
 

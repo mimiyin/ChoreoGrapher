@@ -25,9 +25,9 @@ class Beat {
     //println("Beat: " + beat + "\tRaw Tempo: " + rawTempo + "\tNatural Log: " + log + "\tTempo: " + tempo);
   }
 
-  void display(color col) {
+  void display(color currentCol) {
     noStroke();
-    fill(col);
+    fill(currentCol);
     ellipse(beat, rawTempo, 10, 10);    
   }
 }

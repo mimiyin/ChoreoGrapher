@@ -1,9 +1,6 @@
 // Manages display of your content
 class Storyboard {
   Voice current;
-  Minim minim;
-  AudioPlayer audio;
-  boolean hasAudio;
 
   float t = width;
   float tSpeed = 10;
@@ -11,8 +8,8 @@ class Storyboard {
 
   float duration = 90;
 
-  Storyboard(PApplet parent) {
-    minim = new Minim(parent);
+  Storyboard() {
+
   }
 
   void reset() {
@@ -80,26 +77,14 @@ class Storyboard {
     line(xPos, 0, xPos, height);
   }
 
-  void addAudio(String path) {
-    audio = minim.loadFile(path);
-    audio.cue(0);
-
-    hasAudio = true;
-    println("Loaded audio from: " + path);
-    println("The audio is " + Math.round(audio.length()/1000) + "s long.");
-  }
 
   void startEvent() {
     startingAt = t;
-    if (hasAudio) {
-      audio.cue(0);
-      audio.play();
-    }
+    sb.pickVoice();
   }
 
   void stopEvent() {
-    if (hasAudio)
-      audio.pause();
+     println("STOP!");
   }
 
   boolean isDone() {

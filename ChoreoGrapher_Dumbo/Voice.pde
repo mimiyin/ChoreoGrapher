@@ -1,15 +1,12 @@
 class Voice {
   boolean isCurrent;
   boolean hasBeats;
-  boolean hasClips;
   Beat[] beats;
   String name;
   int index, counter;
   float prog;
   float weight, threshold, yPos;
   int firstBeatInd, lastBeatInd;
-  ArrayList<Movie> clips;
-  Movie picked;
   ToggleButton button;
 
   color col;
@@ -22,7 +19,7 @@ class Voice {
     parent = p;
     name = _name;
     index = _index;
-    button = new ToggleButton(name, Controls.SIDEBAR, index, "Draw " + name + "...");
+    button = new ToggleButton(name, menus[1], index, "Draw " + name + "...");
     reset();
     col = colors[index];
     selectVoiceEvent(this);
@@ -37,9 +34,6 @@ class Voice {
     background(255);
     weight = 0;
     threshold = 0;
-
-    // Init clips arraylist
-    initClips();
 
     // Initialize beats array with 
     // a dot for every x-position
@@ -134,8 +128,8 @@ class Voice {
 
   void display() {
     for (Beat beat: beats) {
-      if (beat.rawTempo > mouseYMin) {
-        color currentCol = isCurrent ? color(red(col), green(col), blue(col)) : color(red(col), green(col), blue(col), 8);
+      if (beat.rawTempo > mouseYMin && beat.beat % 7 == 0) {
+        color currentCol = isCurrent ? color(red(col), green(col), blue(col), 255) : color(red(col), green(col), blue(col), 32);
         beat.display(currentCol);
       }
     }
@@ -155,21 +149,7 @@ class Voice {
     }
   }
 
-  void addClip(String path) {
-    try {
-      clips.add(new Movie(parent, path));
-      hasClips = true;
-    }
-    catch (Exception e) {
-      println("No movie at: " + path);
-    }
-  }
-
   void run() {
-    if (picked != null) {
-      picked.stop();
-      picked = null;
-    }
     Beat thisBeat = beats[(int)Math.round(sb.xPos)];
     weight = thisBeat.tempo;
   }
@@ -177,33 +157,21 @@ class Voice {
   void toggleCurrent(boolean _isCurrent) {
     isCurrent = _isCurrent;
     counter = 0;
-    if (isCurrent && hasClips )
-      pickClip();
-  }
-
-  void pickClip() {
-    int m = (int)random(clips.size());
-    picked = clips.get(m);  
-    picked.play();
   }
 
   void play() {
-    if (hasClips) {
-      picked.play();
-      image(picked, width/2, height/2, width, height);
-    }
-    else {
-      // Calculate progress
-      counter++;
 
-      boolean isFadingIn = counter < sb.duration/2;
-      float mult = map(counter, 0, sb.duration, isFadingIn ? 0: 255, isFadingIn ? 255 : 0)/128;
-      background(red(col)*mult, green(col)*mult, blue(col)*mult);
-      textSize(64);
-      textAlign(LEFT);
-      text("Motif " + name + " selected", 10, height-10);
-    }
+    // Calculate progress
+    counter++;
+
+    boolean isFadingIn = counter < sb.duration/2;
+    float mult = map(counter, 0, sb.duration, isFadingIn ? 32: 255, isFadingIn ? 255 : 32)/128;
+    background(red(col)*mult, green(col)*mult, blue(col)*mult);
+    textSize(64);
+    textAlign(LEFT);
+    text("Motif " + name + " selected", 10, height-10);
   }
+
 
   void setProb(float sum) {
     prob = int(100*weight/sum);
@@ -228,22 +196,10 @@ class Voice {
   }
 
   boolean isDone() {
-    if (hasClips && picked.time() >= picked.duration()-1) {
-      println("VOICE IS DONE!!!");
-      return true;
-    }
-    else if (counter > sb.duration)
+    if (counter > sb.duration)
       return true;
     else
       return false;
-  }
-
-  void setClipSource() {
-    selectFolder("Select source folder for clips.", "loadClipsEvent");
-  }
-
-  void initClips() {
-    clips = new ArrayList<Movie>();
   }
 }
 

@@ -85,8 +85,8 @@ class Voice {
         prevBeatInd = i;
         nextBeatInd = findNextBeat(i+1);
         indRange = nextBeatInd - prevBeatInd;
-        prevBeat.set(beat, tempo);
-        nextBeat.set(beats[nextBeatInd].beat, beats[nextBeatInd].rawTempo);
+        prevBeat.set(beat, tempo, 0);
+        nextBeat.set(beats[nextBeatInd].beat, beats[nextBeatInd].rawTempo, 0);
         range = PVector.sub(nextBeat, prevBeat);
       }
       else {

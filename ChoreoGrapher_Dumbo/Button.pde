@@ -75,59 +75,6 @@ class ToggleButton extends Button {
   }
 }
 
-void load() {
-  // Pause drawing while we load the file
-  reset(true);
-  isDrawable = false;
-  selectFolder("Load Graph", "load");
-}
-
-void load(File folder) {
-  // Clear voices
-  voices = new ArrayList<Voice>();
-
-  String path = folder.getAbsolutePath();
-  int numVoices = folder.listFiles().length;
-
-  for (int i = 0; i < numVoices; i++) {
-    Voice v = new Voice(this, String.valueOf(i), i);
-    voices.add(v);
-    String[] savedBeats = loadStrings(path + "/" + nf(i, 2) + ".txt");
-    Beat[] beats = new Beat[savedBeats.length];
-    for (int j = 0; j < savedBeats.length; j++) {
-      String[] savedBeat = savedBeats[j].split(", ");
-      beats[j] = new Beat(Float.parseFloat(savedBeat[0]), Float.parseFloat(savedBeat[1]), Boolean.parseBoolean(savedBeat[2]));
-    }
-    v.loadBeats(beats);
-    selectVoiceEvent(v);
-  }
-  // Get ready to play
-  isDrawable = true;
-  isPlayable = true;
-}
-
-void save() {
-  selectFolder("Save This Graph", "dump");
-}
-
-void dump(File folder) {
-  String path = folder.getAbsolutePath();
-
-  for (Voice v: voices) {
-    String[] savedBeats = new String[v.beats.length];
-    String concatenator = ", ";
-    Beat[] beatsToSave = v.beats;
-    for (int i = 0; i < beatsToSave.length; i++) {
-      Beat beat = beatsToSave[i];
-      String savedBeat = "" + beat.beat;
-      savedBeat += concatenator + beat.rawTempo;
-      savedBeat += concatenator + beat.isUserCreated;
-      savedBeats[i] = savedBeat;
-    }
-    saveStrings(path + "/" + nf(v.index, 2) + ".txt", savedBeats);
-  }
-}
-
 void addVoice() {
   turnOffVoices();
   // Select folder to load media

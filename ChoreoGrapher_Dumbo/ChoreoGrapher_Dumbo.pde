@@ -32,7 +32,7 @@ int mouseYMin = 50;
 int mouseXMin = 100;
 
 void setup() {
-  size(displayWidth, displayHeight);
+  size(1024, 680);
 
   play = new ToggleButton("Play", menus[0], 1, "Stop");
   clearAll = new Button("Clear All", menus[0], 2);
@@ -75,7 +75,6 @@ void draw() {
     clock = time + "s";
     textAlign(CENTER);
     textSize(48);
-    float textWidth = textWidth(clock+5);
 
     if (play.isOn) {
       if (sb.isDone()) {
@@ -83,12 +82,6 @@ void draw() {
       }
       sb.run();
       timer = millis() - startTime;
-    }
-    // When stopped, show end-time
-    else {
-      fill(0);
-      rectMode(CENTER);
-      rect(width-50, height-30, textWidth, 70);
     }
 
     // Display clock
@@ -124,6 +117,7 @@ void mousePressed() {
   isDrawing = true;
   // Play or Stop storyboard
   if (play.isHovered() && isPlayable) {
+    //println("PLAY IS HOVERED!!!");
     if (play.isOn)
       pauseEvent();
     else

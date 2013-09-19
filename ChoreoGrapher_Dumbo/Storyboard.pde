@@ -3,7 +3,7 @@ class Storyboard {
   Voice current;
 
   float t = width;
-  float tSpeed = 10;
+  float tSpeed = 50;
   float xPos, startingAt;
 
   float duration = 90;
@@ -26,7 +26,7 @@ class Storyboard {
         v.run();
         sum += v.weight;
         v.threshold = sum;
-        println("SUM: " + sum + "\tTH: " + v.threshold + "\tWEIGHT: " + v.weight);
+        //println("SUM: " + sum + "\tTH: " + v.threshold + "\tWEIGHT: " + v.weight);
       }
     }
     return sum;
@@ -60,7 +60,9 @@ class Storyboard {
         v.trackCurve();
       }
     }
-
+    println("RUNNING VOICE: " + this.t);
+    t = this.t;
+    
     // XPOS
     xPos = t + (tSpeed*current.prog);
 

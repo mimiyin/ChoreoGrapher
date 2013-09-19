@@ -367,7 +367,7 @@ class Storyboard {
   float xPos, startingAt, endingAt, t;
   float tSpeed = 10;
 
-  float duration = 90;
+  float duration = 30;
 
   Storyboard() {
   }
@@ -415,7 +415,7 @@ class Storyboard {
   void run() {
     //println("RUNNING VOICE: " + this.t);
     t = this.t;
-    if (xPos >= endingAt) {
+    if (xPos >= this.endingAt) {
       pauseEvent();
     }
     else {
@@ -429,7 +429,7 @@ class Storyboard {
       }
 
       // XPOS
-      xPos = t + (tSpeed*current.prog);
+      xPos += tSpeed/duration;
     }
 
     textSize(16);
@@ -445,13 +445,12 @@ class Storyboard {
     stroke(255);    
     line(xPos, 0, xPos, height);
 
-    this.t = t;
   }
 
 
   void startEvent() {
     startingAt = width;
-    endingAt = 0;
+    this.endingAt = 0;
     for (Voice v: voices) {
       if (v.hasBeats) {
         v.diameter = 20;
@@ -459,10 +458,10 @@ class Storyboard {
           startingAt = v.firstBeatInd;
         }
         if (v.lastBeatInd > endingAt) {
-          endingAt = v.lastBeatInd;
+          this.endingAt = v.lastBeatInd;
         }
       }
-    }
+    }    
     t = startingAt;
     xPos = t;
     sb.pickVoice();

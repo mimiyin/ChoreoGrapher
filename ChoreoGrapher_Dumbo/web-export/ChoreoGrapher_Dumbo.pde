@@ -98,14 +98,15 @@ void draw() {
 void reset(boolean isResettingAll) {
   background(255);
   if (isResettingAll) {
-    for (int v = voices.size()-1; v >= 0; v--) {
-      voices.get(v).reset();
-    }
+    sb.reset();
     isPlayable = false;
   }
   else
     selected.reset();
-  pauseEvent();
+
+  if (selected != null)
+    selected.toggle(true);
+  isDrawable = true;
 }
 
 //////////////////////////////////////////
@@ -123,30 +124,25 @@ void mousePressed() {
     else
       playEvent();
   }
-  else if (isDrawable) {
-    pauseEvent();
-  }
 }
 
 void mouseReleased() {
   isDrawing = false;
-  if (isDrawable)
+  if (isDrawable) {
     selected.interpolate();
-
-  if (play.isHovered() && isPlayable && !play.isOn)
-    isDrawable = true;
-
-  // Clear graph
-  // Re-initialize beats array
-  else if (clearAll.isHovered())
-    reset(true);
-  else if (clear.isHovered())
-    reset(false);
-  else if (isDrawable) {
+    
+    // Select voice to draw
     for (Voice v : voices) {
       if (v.button.isHovered())
         selectVoiceEvent(v);
     }
+    
+    // Clear graph
+    // Re-initialize beats array
+    if (clearAll.isHovered())
+      reset(true);
+    else if (clear.isHovered())
+      reset(false);
   }
 }
 
@@ -185,12 +181,10 @@ void playEvent() {
 
 void pauseEvent() {
   play.toggle(false);
+  isDrawable = true;
   sb.stopEvent();
   if (selected !=null)
-    selected.button.toggle(true);
-
-  isDrawable = true;
-  isExporting = false;
+    selected.toggle(true);
 }
 
 void selectVoiceEvent(Voice v) {
@@ -266,10 +260,13 @@ class Button {
   color off = 67;
   color col = off;
   color hasBeatsCol = off;
+  String menu;
+  boolean needsOutline;
 
-  Button(String _label, String menu, int mult) {
+  Button(String _label, String _menu, int mult) {
 
     side = 85;
+    menu = _menu;
     if (menu == "CONTROLS") {
       x = width-((side + 10)*mult);
       y = side/4;
@@ -286,7 +283,8 @@ class Button {
   void display() {
 
     rectMode(CORNER);
-    stroke(255);
+    stroke(needsOutline ? 0 : 255);
+    strokeWeight(needsOutline ? 10 : 1);
     fill(col);
     textSize(13);
     textAlign(CENTER, CENTER);
@@ -321,6 +319,7 @@ class ToggleButton extends Button {
   void toggle(boolean _isOn) {
     isOn = _isOn;
     col = isOn ? hasBeatsCol : (hasBeats ? hasBeatsCol : off);
+    needsOutline = isOn && col != off && menu == "MOTIFS";
     if (isOn)
       label = offLabel;
     else
@@ -365,18 +364,17 @@ void turnOffVoices() {
 class Storyboard {
   Voice current;
 
-  float t = width;
+  float xPos, startingAt, endingAt, t;
   float tSpeed = 50;
-  float xPos, startingAt;
 
   float duration = 90;
 
   Storyboard() {
-
   }
 
   void reset() {
-    t = width;
+    xPos = -1;
+    startingAt = -1;
     for (Voice v : voices) {
       v.reset();
     }
@@ -396,13 +394,12 @@ class Storyboard {
   }
 
   void pickVoice() {
-    t+=tSpeed;
     float sum = calcSum();
     float dart = random(sum);
     float lowest = sum;
     for (Voice v : voices) {
       if (v.weight > 0) {
-        println("DART: " + dart + "\tTH: " + v.threshold + "\tLOWEST: " + lowest);
+        //println("DART: " + dart + "\tTH: " + v.threshold + "\tLOWEST: " + lowest);
         if (dart < v.threshold && v.threshold <= lowest) {
           lowest = v.threshold;
           current = v;
@@ -412,9 +409,18 @@ class Storyboard {
     }
     if (current != null)
       current.toggleCurrent(true);
+    t+=tSpeed;
   }
 
   void run() {
+    //println("RUNNING VOICE: " + this.t);
+    t = this.t;
+
+    if (t > endingAt) {
+      pauseEvent();
+      return;
+    }
+
     current.play();
     for (Voice v : voices) {
       if (v.hasBeats) {
@@ -423,33 +429,47 @@ class Storyboard {
         v.trackCurve();
       }
     }
-    println("RUNNING VOICE: " + this.t);
-    t = this.t;
-    
+
     // XPOS
     xPos = t + (tSpeed*current.prog);
 
     textSize(16);
     textAlign(LEFT);
+    fill(255);
     text("Clip " + int((t-startingAt)/10), xPos + 24, 100); 
- 
-    for(int t = mouseXMin; t < width; t+=tSpeed) {
-     stroke(255, 16);
-     line(t, 0, t, height);
+
+    for (int t = mouseXMin; t < width; t+=tSpeed) {
+      stroke(255, 16);
+      line(t, 0, t, height);
     }
-    
+
     stroke(255);    
     line(xPos, 0, xPos, height);
   }
 
 
   void startEvent() {
-    startingAt = t;
+    startingAt = width;
+    endingAt = 0;
+    for (Voice v: voices) {
+      if (v.hasBeats) {
+        if (v.firstBeatInd < startingAt) {
+          startingAt = v.firstBeatInd;
+        }
+        if (v.lastBeatInd > endingAt) {
+          endingAt = v.lastBeatInd;
+        }
+      }
+    }
+    t = startingAt;
+    xPos = t;
     sb.pickVoice();
   }
 
   void stopEvent() {
-     println("STOP!");
+    for (Voice v : voices) {
+      v.toggle(false);
+    }
   }
 
   boolean isDone() {
@@ -562,11 +582,6 @@ class Voice {
       beats[i] = thisBeat;
     }
 
-    if (firstBeatInd < sb.t) {
-      sb.t = firstBeatInd;
-      sb.xPos = sb.t;
-    }
-
     // Has beats now
     hasBeats = true; 
     button.setHasBeats(true);
@@ -641,10 +656,10 @@ class Voice {
   }
 
   void trackCurve() {
-    prog = counter/sb.duration;
+    prog = constrain(counter/sb.duration, 0, 1);
 
     // Calculate diameter
-    diameter = isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10);
+    diameter = constrain(isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10), 20, 50);
     yPos = beats[(int)sb.xPos].rawTempo;
     if (yPos > mouseYMin) {
       stroke(255);

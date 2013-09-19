@@ -98,14 +98,15 @@ void draw() {
 void reset(boolean isResettingAll) {
   background(255);
   if (isResettingAll) {
-    for (int v = voices.size()-1; v >= 0; v--) {
-      voices.get(v).reset();
-    }
+    sb.reset();
     isPlayable = false;
   }
   else
     selected.reset();
-  pauseEvent();
+
+  if (selected != null)
+    selected.toggle(true);
+  isDrawable = true;
 }
 
 //////////////////////////////////////////
@@ -123,30 +124,25 @@ void mousePressed() {
     else
       playEvent();
   }
-  else if (isDrawable) {
-    pauseEvent();
-  }
 }
 
 void mouseReleased() {
   isDrawing = false;
-  if (isDrawable)
+  if (isDrawable) {
     selected.interpolate();
-
-  if (play.isHovered() && isPlayable && !play.isOn)
-    isDrawable = true;
-
-  // Clear graph
-  // Re-initialize beats array
-  else if (clearAll.isHovered())
-    reset(true);
-  else if (clear.isHovered())
-    reset(false);
-  else if (isDrawable) {
+    
+    // Select voice to draw
     for (Voice v : voices) {
       if (v.button.isHovered())
         selectVoiceEvent(v);
     }
+    
+    // Clear graph
+    // Re-initialize beats array
+    if (clearAll.isHovered())
+      reset(true);
+    else if (clear.isHovered())
+      reset(false);
   }
 }
 
@@ -185,12 +181,10 @@ void playEvent() {
 
 void pauseEvent() {
   play.toggle(false);
+  isDrawable = true;
   sb.stopEvent();
   if (selected !=null)
-    selected.button.toggle(true);
-
-  isDrawable = true;
-  isExporting = false;
+    selected.toggle(true);
 }
 
 void selectVoiceEvent(Voice v) {

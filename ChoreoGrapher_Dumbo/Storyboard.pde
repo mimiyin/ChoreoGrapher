@@ -2,18 +2,17 @@
 class Storyboard {
   Voice current;
 
-  float t = width;
+  float xPos, startingAt, endingAt, t;
   float tSpeed = 50;
-  float xPos, startingAt;
 
   float duration = 90;
 
   Storyboard() {
-
   }
 
   void reset() {
-    t = width;
+    xPos = -1;
+    startingAt = -1;
     for (Voice v : voices) {
       v.reset();
     }
@@ -33,13 +32,12 @@ class Storyboard {
   }
 
   void pickVoice() {
-    t+=tSpeed;
     float sum = calcSum();
     float dart = random(sum);
     float lowest = sum;
     for (Voice v : voices) {
       if (v.weight > 0) {
-        println("DART: " + dart + "\tTH: " + v.threshold + "\tLOWEST: " + lowest);
+        //println("DART: " + dart + "\tTH: " + v.threshold + "\tLOWEST: " + lowest);
         if (dart < v.threshold && v.threshold <= lowest) {
           lowest = v.threshold;
           current = v;
@@ -49,9 +47,18 @@ class Storyboard {
     }
     if (current != null)
       current.toggleCurrent(true);
+    t+=tSpeed;
   }
 
   void run() {
+    //println("RUNNING VOICE: " + this.t);
+    t = this.t;
+
+    if (t > endingAt) {
+      pauseEvent();
+      return;
+    }
+
     current.play();
     for (Voice v : voices) {
       if (v.hasBeats) {
@@ -60,33 +67,47 @@ class Storyboard {
         v.trackCurve();
       }
     }
-    println("RUNNING VOICE: " + this.t);
-    t = this.t;
-    
+
     // XPOS
     xPos = t + (tSpeed*current.prog);
 
     textSize(16);
     textAlign(LEFT);
+    fill(255);
     text("Clip " + int((t-startingAt)/10), xPos + 24, 100); 
- 
-    for(int t = mouseXMin; t < width; t+=tSpeed) {
-     stroke(255, 16);
-     line(t, 0, t, height);
+
+    for (int t = mouseXMin; t < width; t+=tSpeed) {
+      stroke(255, 16);
+      line(t, 0, t, height);
     }
-    
+
     stroke(255);    
     line(xPos, 0, xPos, height);
   }
 
 
   void startEvent() {
-    startingAt = t;
+    startingAt = width;
+    endingAt = 0;
+    for (Voice v: voices) {
+      if (v.hasBeats) {
+        if (v.firstBeatInd < startingAt) {
+          startingAt = v.firstBeatInd;
+        }
+        if (v.lastBeatInd > endingAt) {
+          endingAt = v.lastBeatInd;
+        }
+      }
+    }
+    t = startingAt;
+    xPos = t;
     sb.pickVoice();
   }
 
   void stopEvent() {
-     println("STOP!");
+    for (Voice v : voices) {
+      v.toggle(false);
+    }
   }
 
   boolean isDone() {

@@ -8,10 +8,13 @@ class Button {
   color off = 67;
   color col = off;
   color hasBeatsCol = off;
+  String menu;
+  boolean needsOutline;
 
-  Button(String _label, String menu, int mult) {
+  Button(String _label, String _menu, int mult) {
 
     side = 85;
+    menu = _menu;
     if (menu == "CONTROLS") {
       x = width-((side + 10)*mult);
       y = side/4;
@@ -28,7 +31,8 @@ class Button {
   void display() {
 
     rectMode(CORNER);
-    stroke(255);
+    stroke(needsOutline ? 0 : 255);
+    strokeWeight(needsOutline ? 10 : 1);
     fill(col);
     textSize(13);
     textAlign(CENTER, CENTER);
@@ -63,6 +67,7 @@ class ToggleButton extends Button {
   void toggle(boolean _isOn) {
     isOn = _isOn;
     col = isOn ? hasBeatsCol : (hasBeats ? hasBeatsCol : off);
+    needsOutline = isOn && col != off && menu == "MOTIFS";
     if (isOn)
       label = offLabel;
     else

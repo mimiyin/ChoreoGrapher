@@ -99,11 +99,6 @@ class Voice {
       beats[i] = thisBeat;
     }
 
-    if (firstBeatInd < sb.t) {
-      sb.t = firstBeatInd;
-      sb.xPos = sb.t;
-    }
-
     // Has beats now
     hasBeats = true; 
     button.setHasBeats(true);
@@ -178,10 +173,10 @@ class Voice {
   }
 
   void trackCurve() {
-    prog = counter/sb.duration;
+    prog = constrain(counter/sb.duration, 0, 1);
 
     // Calculate diameter
-    diameter = isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10);
+    diameter = constrain(isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10), 20, 50);
     yPos = beats[(int)sb.xPos].rawTempo;
     if (yPos > mouseYMin) {
       stroke(255);

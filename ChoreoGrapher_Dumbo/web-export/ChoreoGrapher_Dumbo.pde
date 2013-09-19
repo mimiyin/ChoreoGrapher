@@ -365,7 +365,7 @@ class Storyboard {
   Voice current;
 
   float xPos, startingAt, endingAt, t;
-  float tSpeed = 50;
+  float tSpeed = 10;
 
   float duration = 90;
 
@@ -415,23 +415,22 @@ class Storyboard {
   void run() {
     //println("RUNNING VOICE: " + this.t);
     t = this.t;
-
-    if (t > endingAt) {
+    if (xPos >= endingAt) {
       pauseEvent();
-      return;
     }
-
-    current.play();
-    for (Voice v : voices) {
-      if (v.hasBeats) {
-        v.setProb(calcSum());
-        v.display();
-        v.trackCurve();
+    else {
+      current.play();
+      for (Voice v : voices) {
+        if (v.hasBeats) {
+          v.setProb(calcSum());
+          v.display();
+          v.trackCurve();
+        }
       }
-    }
 
-    // XPOS
-    xPos = t + (tSpeed*current.prog);
+      // XPOS
+      xPos = t + (tSpeed*current.prog);
+    }
 
     textSize(16);
     textAlign(LEFT);
@@ -445,6 +444,8 @@ class Storyboard {
 
     stroke(255);    
     line(xPos, 0, xPos, height);
+
+    this.t = t;
   }
 
 
@@ -453,6 +454,7 @@ class Storyboard {
     endingAt = 0;
     for (Voice v: voices) {
       if (v.hasBeats) {
+        v.diameter = 20;
         if (v.firstBeatInd < startingAt) {
           startingAt = v.firstBeatInd;
         }
@@ -656,10 +658,10 @@ class Voice {
   }
 
   void trackCurve() {
-    prog = constrain(counter/sb.duration, 0, 1);
+    prog = constrain(counter/sb.duration, 0, 1)*10;
 
     // Calculate diameter
-    diameter = constrain(isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10), 20, 50);
+    diameter = constrain(isCurrent ? lerp(diameter, 50, prog) : lerp(20, diameter, prog), 20, 50);
     yPos = beats[(int)sb.xPos].rawTempo;
     if (yPos > mouseYMin) {
       stroke(255);

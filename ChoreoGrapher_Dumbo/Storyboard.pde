@@ -3,7 +3,7 @@ class Storyboard {
   Voice current;
 
   float xPos, startingAt, endingAt, t;
-  float tSpeed = 50;
+  float tSpeed = 10;
 
   float duration = 90;
 
@@ -53,23 +53,22 @@ class Storyboard {
   void run() {
     //println("RUNNING VOICE: " + this.t);
     t = this.t;
-
-    if (t > endingAt) {
+    if (xPos >= endingAt) {
       pauseEvent();
-      return;
     }
-
-    current.play();
-    for (Voice v : voices) {
-      if (v.hasBeats) {
-        v.setProb(calcSum());
-        v.display();
-        v.trackCurve();
+    else {
+      current.play();
+      for (Voice v : voices) {
+        if (v.hasBeats) {
+          v.setProb(calcSum());
+          v.display();
+          v.trackCurve();
+        }
       }
-    }
 
-    // XPOS
-    xPos = t + (tSpeed*current.prog);
+      // XPOS
+      xPos = t + (tSpeed*current.prog);
+    }
 
     textSize(16);
     textAlign(LEFT);
@@ -83,6 +82,8 @@ class Storyboard {
 
     stroke(255);    
     line(xPos, 0, xPos, height);
+
+    this.t = t;
   }
 
 
@@ -91,6 +92,7 @@ class Storyboard {
     endingAt = 0;
     for (Voice v: voices) {
       if (v.hasBeats) {
+        v.diameter = 20;
         if (v.firstBeatInd < startingAt) {
           startingAt = v.firstBeatInd;
         }

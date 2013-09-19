@@ -173,10 +173,10 @@ class Voice {
   }
 
   void trackCurve() {
-    prog = constrain(counter/sb.duration, 0, 1);
+    prog = constrain(counter/sb.duration, 0, 1)*10;
 
     // Calculate diameter
-    diameter = constrain(isCurrent ? lerp(diameter, 50, prog*10) : lerp(20, diameter, prog*10), 20, 50);
+    diameter = constrain(isCurrent ? lerp(diameter, 50, prog) : lerp(20, diameter, prog), 20, 50);
     yPos = beats[(int)sb.xPos].rawTempo;
     if (yPos > mouseYMin) {
       stroke(255);

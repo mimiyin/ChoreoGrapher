@@ -65,6 +65,11 @@ void draw() {
     for (Voice v : voices) {
       v.display();
     }
+    
+    textAlign(LEFT);
+    fill(0);    
+    textSize(32);
+    text("Draw a probability curve for each motif and hit Play.", 10, height-20);
   }
   else {
     //Calculate time elapsed

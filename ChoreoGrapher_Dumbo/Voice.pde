@@ -162,9 +162,9 @@ class Voice {
     boolean isFadingIn = counter < sb.duration/2;
     float mult = map(counter, 0, sb.duration, isFadingIn ? 32: 255, isFadingIn ? 255 : 32)/128;
     background(red(col)*mult, green(col)*mult, blue(col)*mult);
-    textSize(64);
+    textSize(48);
     textAlign(LEFT);
-    text("Motif " + name + " selected", 10, height-10);
+    text("Motif " + name + " selected. Press Pause to draw.", 10, height-10);
   }
 
 

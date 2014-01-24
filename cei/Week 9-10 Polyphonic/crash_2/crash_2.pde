@@ -1,4 +1,8 @@
 // Something to control the number of types of cars that are in play
+// A curve to describe the probability of each type of car
+// A curve to describe the trouble in each car
+// Speed and mass of each car
+
 
 // Probability waves to release cars
 // Each car has a trouble wave

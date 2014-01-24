@@ -24,8 +24,6 @@ Cursor yCursor = new Cursor(0, frequency, amplitude, offset);
 void setup() {
   size(800, 600); 
   background(255);
-  noiseSeed(0);
-  noiseDetail(4, .67);
   tx = width/2;
   ty = height/2;
 }

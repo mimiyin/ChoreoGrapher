@@ -1,0 +1,6 @@
+[submodule "cei"]
+	path = cei
+	url = ../coding-for-emotional-impact.git
+[submodule "cei/StoryGrapher"]
+	path = cei/StoryGrapher
+	url = https://github.com/mimiyin/StoryGrapher.git

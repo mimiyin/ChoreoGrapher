@@ -5,7 +5,7 @@
 float tx, ty;
 float x, y, prevX, prevY;
 int level;
-int cap = 0;
+int limit = 0;
 int [] indices = { 
   0, 1, 2, 3, 4
 };
@@ -81,7 +81,6 @@ void display(float yoff, float y) {
 
 void keyPressed() {
 
-    // SPACEBAR
     switch(keyCode) {
     case UP:
       indices[level]++;
@@ -90,10 +89,10 @@ void keyPressed() {
       indices[level]--;
       break;
     case RIGHT:
-      cap++;
+      limit++;
       break;
     case LEFT:
-      cap--;
+      limit--;
       break;
     }
     

@@ -1,13 +1,16 @@
 float x, y, prevX, prevY;
-Wave xWave = new Wave(PI/2, .01, 10, 0);
-Wave yWave = new Wave(0, .01, 10, 0);
+float frequency = 0.01;
+float amplitude = 5;
+float offset = 0;
+
+Sine xWave = new Sine(PI/2, frequency, amplitude, offset);
+Sine yWave = new Sine(0, frequency, amplitude, offset);
 
 float tx, ty;
-float t;
-int limit = 1;
+float t, lim;
+int limit = 2;
 
-boolean hasChanged;
-boolean isAuto = true;
+boolean auto;
 
 
 void setup() {
@@ -21,50 +24,89 @@ void setup() {
 }
 
 void draw() {
-  if (isAuto) {
-    t+=.00001 ;
-    limit += noise(t);
-    limit%=3;
+  if (auto) {
+    t+=.001;
+    lim += noise(t);
+    println("LIMIT: " + lim);
+    limit = int(lim%3);
   }
-  float xspeed = xWave.wave(int(limit));
-  float yspeed = yWave.wave(int(limit));
+
+  if (x > tx || x < -tx || y > ty || y < -ty) {    
+    if (x > tx) {
+      x = -tx;
+      prevX = x;
+    }   
+    else if (x < -tx) {
+      x = tx;
+      prevX = x;
+    } 
+    if (y > ty) { 
+      y = -ty;
+      prevY = y;
+    }
+    else if (y < -ty) {
+      y = ty;
+      prevY = y;
+    }
+  }
+
+  float xspeed = xWave.wave(0);
+  float yspeed = yWave.wave(0);
   x += xspeed;
   y += yspeed;
 
   pushMatrix();
   translate(tx, ty);
-  //ellipse(x, y, 1, 1);
   line(x, y, prevX, prevY);
   prevX = x;
   prevY = y;
   popMatrix();
 
-  fill(0);
-  rect(0, 0, width, 40);
-  fill(255);
-  text("LIMIT: " + Float.toString(limit).substring(0, 1), 20, 20);
+  label();
+}
 
-  hasChanged = false;
+
+void label() {
+  fill(0);
+  rect(0, 0, width, 30);
+  fill(255);
+  text("AUTO: " + auto + "\t\tLIMIT: " + limit + "\t\tFREQ: " + frequency + "\t\tAMP: " + amplitude, 10, 20);
+}
+
+void reset() {
+  xWave.reset();
+  yWave.reset();
 }
 
 void keyPressed() {
 
   switch(keyCode) {
-  case UP:
-    isAuto = false;
+  case RIGHT:
+    auto = false;
     limit++;
-    hasChanged = true;
     break;
-  case DOWN:
-    isAuto = false;
+  case LEFT:
+    auto = false;
     limit--;  
-    hasChanged = true;
     break;
   case ENTER:
-    isAuto = true;
+    auto = true;
     break;
   }
 
   limit = constrain(limit, 0, 10);
+
+  if (key == 'f' || key == 'v') {
+    frequency += (key == 'f' ? 0.001 : -0.001);
+    frequency = constrain(frequency, 0.001, PI);
+    xWave.setF(frequency);
+    yWave.setF(frequency);
+  }
+  else if (key == 'a' || key == 'z') {
+    amplitude += (key == 'a' ? 1 : -1);
+    amplitude = constrain(amplitude, 0, width);
+    xWave.setA(amplitude);
+    yWave.setA(amplitude);
+  }
 }
 

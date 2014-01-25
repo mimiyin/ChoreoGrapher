@@ -33,10 +33,10 @@ class Cursor {
     a = _a;      
     amp = new Cursor(t, f, a, o);
   }  
-  float run(int lim) {
+  float run(int count) {
         
-    if (lim >= cap) {
-      return waves.get(indices[lim]).run(f, a);    
+    if (count >= limit) {
+      return waves.get(indices[count]).run(f, a);    
     }
     else {
       if (freq == null) {
@@ -46,10 +46,10 @@ class Cursor {
         amp = new Cursor(t, f, a, o);
       }
       
-      f = (freq.run(lim+1)/a)*TWO_PI;
-      a = amp.run(lim+1);
+      f = (freq.run(count+1)/a)*TWO_PI;
+      a = amp.run(count+1);
       
-      return waves.get(indices[lim]).run(f, a);
+      return waves.get(indices[count]).run(f, a);
     }
   }
 }

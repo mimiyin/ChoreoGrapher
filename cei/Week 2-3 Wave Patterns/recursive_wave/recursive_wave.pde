@@ -1,9 +1,14 @@
-float x, y, prevX, prevY, theta, xoff;
+float x, y, prevX, prevY, theta;
 float xdir = 1;
 float ydir = 1;
-float offsetX, offsetY;
-
 float tx, ty;
+
+float limit = 2;
+float frequency = 1;
+float amplitude = 5;
+float offset = 0;
+
+boolean auto;
 
 void setup() {
   size(600, 600); 
@@ -15,41 +20,35 @@ void setup() {
 
 void draw() {
   theta += 0.01;
-//  if(x > width) {
-//   x=0;
-//  }
-//  else if(x < 0) {
-//   x = width; 
-//  }
-//  
-//  if(y > height) {
-//   y =0;
-//    
-//  }
-//  
-//  else if(y < 0) {
-//   y = height; 
-//  }
 
-  if(x > tx || x < -tx) {
-   xdir *= -1; 
+  if (x > tx || x < -tx || y > ty || y < -ty) {    
+    if (x > tx) {
+      x = -tx;
+      prevX = x;
+    }   
+    else if (x < -tx) {
+      x = tx;
+      prevX = x;
+    } 
+    if (y > ty) { 
+      y = -ty;
+      prevY = y;
+    }
+    else if (y < -ty) {
+      y = ty;
+      prevY = y;
+    }
   }
-  if(y > ty || y < -ty) {
-   ydir *= -1; 
-  }
-  //xoff++;
-  float limit = wave(false, theta, 1, 2, 0, 0, 1);
-  println(theta%TWO_PI + "\t" + limit);
-  float amp = wave(false, theta, 1, 1, 1, 0, limit);//width/4; //sine(theta, 1, 10, 10);
-  float xspeed = wave(false, theta, 1, amp, 0, 0, limit);
-  float yspeed = wave(true, theta, 1, amp, 0, 0, limit);
-  //offsetX = wave(false, theta, 1, amp, 0, 0, 0)*xdir;
-  //offsetY = wave(true, theta, 1, amp, 0, 0, 0)*ydir;
-  //x = xspeed;// + cos(theta)*50;
-  x += xspeed*xdir;// + offsetX;
-  y += yspeed*ydir;// + offsetY;
-  //y = yspeed;// + sin(theta)*50;
-  //ellipse(x, y, 1, 1);
+
+  float lim = auto ? wave(theta, frequency, amplitude, offset, limit, 0) : limit;
+  float freq = auto ? wave(theta, frequency, amplitude, offset, limit, 0) : frequency;
+  float amp = auto ? wave(theta, frequency, amplitude, offset, limit, 0) : amplitude;
+  
+  float xspeed = wave(theta, freq, amp, offset, lim, 0);
+  float yspeed = wave(theta-PI, freq, amp, offset, lim, 0);
+  x += xspeed*xdir;
+  y += yspeed*ydir;
+
   pushMatrix();
   translate(tx, ty);
   line(x, y, prevX, prevY);
@@ -57,26 +56,57 @@ void draw() {
   prevY = y;
 
   popMatrix();
-  
+
+  label();
+}
+
+void label() {
+  fill(0);
+  rect(0, 0, width, 30);
+  fill(255);
+  text("AUTO: " + auto + "\t\tLIMIT: " + limit + "\t\tFREQ: " + frequency + "\t\tAMP: " + amplitude, 10, 20);
 }
 
 
-float wave(boolean isSine, float t, float f, float a, float o, int c, float lim) {
-  if (c >= lim) {
-    return isSine ? sine(t, f, a, o) : cosine(t, f, a, o);
+float wave(float t, float f, float a, float o, float l, float c) {
+  if (c >= l) {
+    return sine(t, f, a, o);
   }
   else {
     c++;
-    f = wave(!isSine, t, f, a, o, c, lim);
-    a = wave(isSine, t, f, a, o, c, lim); 
-    return isSine ? sine(t, f, a, o) : cosine(t, f, a, o);
+    f = wave(t, f, a, o, l, c);
+    a = wave(t, f, a, o, l, c); 
+    return sine(t, f, a, o);
   }
 }
 
 float sine(float t, float f, float a, float o) {
-  return sin(f*t)*a + o;   
+  return sin(f*t)*a + o;
 }
 
-float cosine(float t, float f, float a, float o) {
-  return cos(f*t)*a + o;   
+void keyPressed() {
+  switch(keyCode) {
+  case RIGHT:
+    limit++;
+    break;
+  case LEFT:
+    limit--;
+    break;
+  case ENTER:
+    auto = !auto;
+    break;
+  }
+
+  limit = constrain(limit, 0, 10);
+  
+  if (key == 'f' || key == 'v') {
+    frequency += (key == 'f' ? 0.001 : -0.001);
+    frequency = constrain(frequency, 0.001, PI);
+  }
+  else if (key == 'a' || key == 'z') {
+    amplitude += (key == 'a' ? 1 : -1);
+    amplitude = constrain(amplitude, 0, width);
+  }
+
 }
+

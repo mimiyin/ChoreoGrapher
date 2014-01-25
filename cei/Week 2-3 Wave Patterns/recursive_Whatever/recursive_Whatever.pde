@@ -6,7 +6,7 @@
 int tx, ty;
 float x, y;
 int level;
-int cap = 0;
+int limit = 0;
 int [] indices = { 
   0, 1, 2, 3, 4
 };
@@ -80,7 +80,7 @@ void label() {
   fill(0);
   rect(0, 0, width, 50);
   fill(255);
-  text("Press RIGHT/LEFT to adjust levels of recursion: " + (cap+1) + "\t\t\tPress f/v to +/- FREQ: " + frequency + "\t\t\tPress a/z to +/- AMP: " + amplitude, 10, 20);
+  text("Press RIGHT/LEFT to adjust levels of recursion: " + (limit+1) + "\t\t\tPress f/v to +/- FREQ: " + frequency + "\t\t\tPress a/z to +/- AMP: " + amplitude, 10, 20);
   text("Press NUM KEY and UP/DOWN to change wave type at each recursion level: (1) " + types[indices[0]] + "\t(2) " + types[indices[1]] + "\t(3) " + types[indices[2]] + "\t(4) " + types[indices[3]] + "\t(5) " + types[indices[4]], 10, 40);
 }
 
@@ -96,12 +96,12 @@ void keyPressed() {
     indices[level] = constrain(indices[level], 0, indices.length-1);
     break;
   case RIGHT:
-    cap++;
-    cap = constrain(cap, 0, indices.length-1);
+    limit++;
+    limit = constrain(limit, 0, indices.length-1);
     break;
   case LEFT:
-    cap--;
-    cap = constrain(cap, 0, indices.length-1);
+    limit--;
+    limit = constrain(limit, 0, indices.length-1);
     break;
   case ENTER:
     show = !show;
@@ -116,7 +116,7 @@ void keyPressed() {
       indices[level] = constrain(indices[level], 0, indices.length-1);
     }
     else if (keyCode == RIGHT || keyCode == LEFT) {
-      cap = constrain(cap, 0, indices.length-1);
+      limit = constrain(limit, 0, indices.length-1);
       xCursor.reset();
       yCursor.reset();
     }

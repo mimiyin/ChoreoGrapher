@@ -24,13 +24,16 @@ void setup() {
 }
 
 void draw() {
+  
+  // Change levels of recursion automatically
   if (auto) {
     t+=.001;
     lim += noise(t);
     println("LIMIT: " + lim);
     limit = int(lim%3);
   }
-
+  
+  // Wrap line around window
   if (x > tx || x < -tx || y > ty || y < -ty) {    
     if (x > tx) {
       x = -tx;
@@ -50,18 +53,21 @@ void draw() {
     }
   }
 
+  // Calculate speed
   float xspeed = xWave.wave(0);
   float yspeed = yWave.wave(0);
   x += xspeed;
   y += yspeed;
-
+  
+  // Draw line connecting current position to position in previous frame
   pushMatrix();
   translate(tx, ty);
   line(x, y, prevX, prevY);
   prevX = x;
   prevY = y;
   popMatrix();
-
+  
+  // Draw label
   label();
 }
 
@@ -70,7 +76,7 @@ void label() {
   fill(0);
   rect(0, 0, width, 30);
   fill(255);
-  text("AUTO: " + auto + "\t\tLIMIT: " + limit + "\t\tFREQ: " + frequency + "\t\tAMP: " + amplitude, 10, 20);
+  text("Press ENTER to toggle AUTO: " + auto + "\t\t\t\u2B0C LIMIT: " + limit + "\t\t\tf/v FREQ: " + frequency + "\t\t\ta/z AMP: " + amplitude, 10, 20);
 }
 
 void reset() {

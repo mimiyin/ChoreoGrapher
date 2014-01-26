@@ -9,7 +9,8 @@ class Sine {
     a = _a;
     o = _o;
   }
-
+  
+  // Reset everything
   void reset() {
     f = frequency; 
     a = amplitude;
@@ -17,16 +18,19 @@ class Sine {
     amp = new Sine(t, f, a, o);
   }
   
+  // Set frequency
   void setF(float _f) {
     f = _f;
     freq = new Sine(t, f, a, o);
   }
-
+  
+  // Set amplitude
   void setA(float _a) {
     a = _a;      
     amp = new Sine(t, f, a, o);
   }  
   
+  // Recursive wave function
   float wave(int count) {
     if (count >= limit) {
       return sine();
@@ -43,7 +47,8 @@ class Sine {
       return sine();
     }
   }
-
+  
+  // Calculate sine value
   float sine() {
     t+=f;
     return sin(t)*a + o;

@@ -9,6 +9,7 @@ float amplitude = 5;
 float offset = 0;
 
 boolean auto;
+float t= 0;
 
 void setup() {
   size(600, 600); 
@@ -40,12 +41,14 @@ void draw() {
     }
   }
 
-  float lim = auto ? wave(theta, frequency, amplitude, offset, limit, 0) : limit;
-  float freq = auto ? wave(theta, frequency, amplitude, offset, limit, 0) : frequency;
-  float amp = auto ? wave(theta, frequency, amplitude, offset, limit, 0) : amplitude;
-  
-  float xspeed = wave(theta, freq, amp, offset, lim, 0);
-  float yspeed = wave(theta-PI, freq, amp, offset, lim, 0);
+  if (auto) {
+    t+=0.0001;
+    limit += abs((cos(t)*tan(t) + 1)*.01); 
+    limit%=3;
+  }
+
+  float xspeed = wave(theta, frequency, amplitude, offset, limit, 0);
+  float yspeed = wave(theta-PI, frequency, amplitude, offset, limit, 0);
   x += xspeed*xdir;
   y += yspeed*ydir;
 
@@ -64,7 +67,7 @@ void label() {
   fill(0);
   rect(0, 0, width, 30);
   fill(255);
-  text("AUTO: " + auto + "\t\tLIMIT: " + limit + "\t\tFREQ: " + frequency + "\t\tAMP: " + amplitude, 10, 20);
+  text("Press ENTER to toggle AUTO: " + auto + "\t\t\t\u2B0C LIMIT: " + int(limit) + "\t\t\tf/v FREQ: " + frequency + "\t\t\ta/z AMP: " + amplitude, 10, 20);
 }
 
 
@@ -74,8 +77,8 @@ float wave(float t, float f, float a, float o, float l, float c) {
   }
   else {
     c++;
-    f = wave(t, f, a, o, l, c);
-    a = wave(t, f, a, o, l, c); 
+    f = wave(t, f, a, a, l, c);
+    a = wave(t, f, a, a, l, c); 
     return sine(t, f, a, o);
   }
 }
@@ -97,16 +100,15 @@ void keyPressed() {
     break;
   }
 
-  limit = constrain(limit, 0, 10);
-  
+  limit = constrain(limit, 0, 5);
+
   if (key == 'f' || key == 'v') {
-    frequency += (key == 'f' ? 0.001 : -0.001);
-    frequency = constrain(frequency, 0.001, PI);
+    frequency += (key == 'f' ? 0.01 : -0.01);
+    frequency = constrain(frequency, 0.01, PI);
   }
   else if (key == 'a' || key == 'z') {
     amplitude += (key == 'a' ? 1 : -1);
     amplitude = constrain(amplitude, 0, width);
   }
-
 }
 

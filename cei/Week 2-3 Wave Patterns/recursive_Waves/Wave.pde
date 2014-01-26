@@ -53,9 +53,7 @@ class Tan extends Wave {
   }
 
   float wave() {
-    float sum = tan(t)*a + o;
-    sum = constrain(sum, -width, width);
-    return sum;
+    return constrain(tan(t)*a + o, -width, height);
   }
 }
 

@@ -20,6 +20,12 @@ void draw() {
 
   if (counter % divider == 0) {
     on = !on;
+    switch(mode) {
+      
+      
+      
+    }
+    
   }
 
   if (on) {
@@ -40,6 +46,13 @@ void load() {
   background(0);
 }
 
+void label() {
+  textAlign(CENTER, CENTER);
+  textSize(128);
+  fill(on ? 255 : 0);
+  text(divider, width/2, height/2);
+}
+
 void keyPressed() {
 
   if (key == 32) {
@@ -52,9 +65,11 @@ void keyPressed() {
   switch(keyCode) {
   case UP:
     divider++;
+    label();
     break;
   case DOWN:
     divider--;
+    label();
     break;
   }
 

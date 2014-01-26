@@ -2,12 +2,11 @@ class Field {
 
   float x, y;
 
-  Field(float f, float a, float o, int c, int[] i, boolean s, boolean e ) {
+  Field(float f, float a, float o, int[] i, boolean s, boolean e ) {
     frequency = f;
     amplitude = a;
     offset = o;
     indices = i;
-    cap = c;
     show = s;
     erase = e;
   }

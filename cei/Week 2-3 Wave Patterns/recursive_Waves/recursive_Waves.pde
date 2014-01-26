@@ -29,6 +29,8 @@ void setup() {
 }
 
 void draw() {
+  
+  // Wrap
   if (x > tx || x < -tx || y > ty || y < -ty) {
     if (x > tx) {
       x = -tx;
@@ -46,13 +48,14 @@ void draw() {
     prevY = y;
   }
 
-
+  // Calculate speed
   float xspeed = xCursor.run(0);
   float yspeed = yCursor.run(0);
 
   x += xspeed;
   y += yspeed;
 
+  // Draw line
   pushMatrix();
   translate(tx, ty);
   stroke(0, 128);
@@ -68,8 +71,8 @@ void label() {
   fill(0);
   rect(0, 0, width, 50);
   fill(255);
-  text("Press RIGHT/LEFT to adjust levels of recursion: " + (cap+1), 10, 20);
-  text("Press NUM KEY and UP/DOWN to change wave type at each recursion level: (1) " + types[indices[0]] + "\t(2) " + types[indices[1]] + "\t(3) " + types[indices[2]] + "\t(4) " + types[indices[3]] + "\t(5) " + types[indices[4]], 10, 40);
+  text("\u2B0C to adjust levels of recursion: " + (limit+1), 10, 20);
+  text("Press NUM KEY and \u2B0D to change wave type at each recursion level: (1) " + types[indices[0]] + "\t(2) " + types[indices[1]] + "\t(3) " + types[indices[2]] + "\t(4) " + types[indices[3]] + "\t(5) " + types[indices[4]], 10, 40);
 }
 
 void display(float yoff, float y) {
@@ -101,7 +104,7 @@ void keyPressed() {
       indices[level] = constrain(indices[level], 0, indices.length-1);
     }
     else if (keyCode == RIGHT || keyCode == LEFT) {
-      cap = constrain(cap, 0, indices.length-1);
+      limit = constrain(limit, 0, indices.length-1);
       xCursor.reset();
       yCursor.reset();
     }

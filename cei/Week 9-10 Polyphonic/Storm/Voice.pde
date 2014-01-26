@@ -3,11 +3,11 @@ class Voice {
   Wave wave; 
   boolean on; 
   color col;
-  float t, value;
+  float t, f, a, value;
 
   Voice(int index, float _t) {
-    t = _t;
-    col = color(0, index*255/max);
+    t = _t;    
+    col = color(0, index*16 + 16);
     waves.add(new Sine(this));
     waves.add(new Cosine(this));
     waves.add(new Tan(this));

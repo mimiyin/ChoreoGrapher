@@ -101,7 +101,7 @@ void keyPressed() {
   }
 
   limit = constrain(limit, 0, 5);
-
+  
   if (key == 'f' || key == 'v') {
     frequency += (key == 'f' ? 0.01 : -0.01);
     frequency = constrain(frequency, 0.01, PI);

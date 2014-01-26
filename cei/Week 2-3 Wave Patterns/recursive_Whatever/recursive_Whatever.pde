@@ -99,11 +99,9 @@ void keyPressed() {
   switch(keyCode) {
   case UP:
     indices[level]++;
-    indices[level] = constrain(indices[level], 0, indices.length-1);
     break;
   case DOWN:
     indices[level]--;
-    indices[level] = constrain(indices[level], 0, indices.length-1);
     break;
   case RIGHT:
     limit++;

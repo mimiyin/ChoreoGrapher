@@ -36,8 +36,7 @@ class Wave {
 class Sine extends Wave {
   String type = "SIN";
 
-  Sine() {
-    
+  Sine() { 
   }
 
   float wave() {
@@ -51,10 +50,8 @@ class Sine extends Wave {
 
 class Cosine extends Wave {
   String type = "COS";
-
-  Cosine() {    
+  Cosine() {
   }
-
   float wave() {
     return cos(t)*a + o;
   }
@@ -80,7 +77,7 @@ class Tan extends Wave {
 class Square extends Wave {
   String type = "SQU";
 
-  Square() {
+  Square() {    
   }
 
   float wave() {

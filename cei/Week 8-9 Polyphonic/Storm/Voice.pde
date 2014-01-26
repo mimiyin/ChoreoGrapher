@@ -8,11 +8,11 @@ class Voice {
   Voice(int index, float _t) {
     t = _t;    
     col = color(0, index*16 + 16);
-    waves.add(new Sine(this));
-    waves.add(new Cosine(this));
-    waves.add(new Tan(this));
-    waves.add(new Square(this));
-    waves.add(new Sawtooth(this));
+    waves.add(new Sine());
+    waves.add(new Cosine());
+    waves.add(new Tan());
+    waves.add(new Square());
+    waves.add(new Sawtooth());
   }
 
   void init(int type, float _f, float _a) {

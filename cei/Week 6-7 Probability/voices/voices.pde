@@ -1,7 +1,6 @@
 float x, y;
 int baseline;
 
-
 float frequency = 0.005;
 float amplitude;
 
@@ -12,8 +11,6 @@ String [] types = {
 
 int max = 5;
 ArrayList<Voice> voices = new ArrayList<Voice>();
-
-Dartboard db = new Dartboard();
 
 boolean show;
 
@@ -28,12 +25,15 @@ void setup() {
 }
 
 void draw() {
+  
   x+=0.5;
 
   if (x > width) {
     background(255);
     x = 0;
   }
+
+  
 
   float offset = 0;
   float [] values = new float [voices.size()];
@@ -55,7 +55,7 @@ void draw() {
     offsets[i] = offset;
   }
 
-  int i = db.fire(0, height-50, offsets);
+  int i = fire(0, height-50, offsets);
   if (i < 0) {
     display(height-offset, offset, color(255, 0, 0, 10));
   }
@@ -67,6 +67,16 @@ void draw() {
 
   label();
 }
+
+int fire(float min, float max, float[] zones) {
+    float dart = random(min, max); 
+    for (int i = 0; i < zones.length; i++) {
+      if ( dart <= zones[i]) {
+        return i;
+      }
+    }
+    return -1;
+  }
 
 void display(float y, float yoff, color col) {
   pushMatrix();
@@ -88,7 +98,7 @@ void label() {
   }
 
   fill(255);
-  text("Spacebar to change TYPE: " + types[type] + "\t\t\t\u2B0C AMP: " + amplitude + "\t\t\t\u2B0D FREQ: " + frequency, 10, 20);
+  text("Press TAB to change WAVE TYPE: " + types[type] + "\t\t\t\u2B06(mouseY)\tAMP: " + amplitude + "\t\t\t\u2B05(mouseX)\tFREQ: " + frequency, 10, 20);
   text("Press NUM KEY to turn on VOICE: " + waveTypes, 10, 40);
 }
 
@@ -98,31 +108,23 @@ void keyPressed() {
   if (index >=0 && index < max) {
     voices.get(index).toggle(type);
   }
-
+  
+  int buffer = 10;
   switch(keyCode) {
   case UP:
-    frequency += frequency < .01 ? 0.001 : .01;
-    break;
-  case DOWN:
-    frequency -= frequency < .01 ? 0.001 : .01;    
-    break;
-  case RIGHT:
-    amplitude++;
+    amplitude = constrain(map(mouseY, height-buffer, buffer, 0, height/2), 10, height/2);
     break;
   case LEFT:
-    amplitude--;
+    frequency = constrain(map(mouseX, buffer, width-buffer, 0.001, .1), 0, .1);
+    break;
+  case TAB:
+    type++;
+    type%=types.length;
     break;
   case ENTER:
     show = !show;
     break;
   }
 
-  if (key == 32) {
-    type++;
-    type%=types.length;
-  }
-
-  frequency = constrain(frequency, 0.001, PI);
-  amplitude = constrain(amplitude, 0, width);
 }
 

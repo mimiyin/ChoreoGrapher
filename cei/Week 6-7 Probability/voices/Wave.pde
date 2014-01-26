@@ -18,10 +18,6 @@ class Wave {
     return wave();
   }
   
-  void setT(float _t) {
-   t = _t; 
-  }
-
   void update() {
     t+=f;
   }
@@ -74,7 +70,7 @@ class Tan extends Wave {
   }
 
   float wave() {
-    return abs(tan(t)*a + o);
+    return abs(tan(t)*a);
   }
   String getType() {
     return type;

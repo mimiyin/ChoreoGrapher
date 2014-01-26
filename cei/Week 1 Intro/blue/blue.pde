@@ -8,7 +8,7 @@ boolean play, mute, linear;
 PImage img;
 float volume, m, a;
 
-int mode = 2;
+int mode = 0;
 int modes = 3;
 
 float x, xspeed;
@@ -41,6 +41,7 @@ void wave() {
   if (linear) { 
     float progress = x/width;
     m = progress > .8 ? m*1.01 : 128;
+    // Add offset if the screen is too dark
     a = (x/width)*m;
     println("PROGRESS: " + progress + "\tMULT: " + m + "\tALPHA: " + a);
   }
@@ -52,12 +53,15 @@ void wave() {
       m = 0;
     }
     m += (delta > 0 ? delta : 1)*0.001;
+    // Make it gain speed faster than lose it
     float aspeed = volume*m;
-    a*=.95;
-    a += aspeed + x*.1;
+    // How quickly does alpha decay
+    a*=.9;
+    // How fast it's progressively getting light just through time passing
+    a += aspeed + x*.01;
     if (a < 1)
       a = 1;
-    println("MULT: " + m + "\tALPHA: " + a + "ASPEED: " + aspeed);
+    println("MULT: " + m + "\tALPHA: " + a + "\tASPEED: " + aspeed);
   }
 
   x+= play ? xspeed/frameRate : 0;
@@ -92,7 +96,7 @@ void load() {
 }
 
 void keyPressed() {
-  if (key == '32') {
+  if (key == 32) {
     play = !play;
     if (play) {    
       player.play();
@@ -103,29 +107,27 @@ void keyPressed() {
     }
   }
 
-
-
-
   switch(keyCode) {
   case SHIFT:
     linear = !linear;
     break;
-  case UP: 
+  case UP:
+    a++;
+    break;
+  case DOWN:
+    a--;
+    break;
+  case RIGHT: 
     mode++;
     player.pause();
     load(); 
     break;
-  case DOWN:
+  case LEFT:
     mode--;
     player.pause();
     load(); 
     break;
-  case RIGHT:
-    a++;
-    break;
-  case LEFT:
-    a--;
-    break;  
+
   case TAB:
     mute = !mute;
     if (mute) {
@@ -136,9 +138,11 @@ void keyPressed() {
     }
     break;
   }
-  
+
   mode = constrain(mode, 0, modes);
   a = constrain(a, 0, 255);
 
+  if (mode == 2) linear = true;
+  else linear = false;
 }
 

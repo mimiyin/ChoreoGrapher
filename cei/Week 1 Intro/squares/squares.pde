@@ -20,12 +20,6 @@ void draw() {
 
   if (counter % divider == 0) {
     on = !on;
-    switch(mode) {
-      
-      
-      
-    }
-    
   }
 
   if (on) {
@@ -69,12 +63,11 @@ void keyPressed() {
     break;
   case DOWN:
     divider--;
+    divider = constrain(divider, 1, divider);  
     label();
     break;
   }
+  
 
-  if (divider < 1) {
-    divider = 0;
-  }
 }
 

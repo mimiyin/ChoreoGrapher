@@ -12,7 +12,7 @@ class Beat {
   }
 
   void init() {    
-// A tempo of 1 frame (3 minutes at 60fps) means take all 3 minutes to play out 1 scene
+    // A tempo of 1 frame (3 minutes at 60fps) means take all 3 minutes to play out 1 scene
     // Max tempo means 10 scenes will play out in 1 second
     // Tempo values are mapped "on a curve" (natural log curve)
     // Play with expMax and expMin to play with which part of the curve you'd like to map your values to

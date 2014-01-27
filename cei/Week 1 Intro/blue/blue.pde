@@ -14,7 +14,8 @@ int modes = 3;
 float x, xspeed;
 
 void setup() {
-  size(displayWidth/2, displayHeight/2);
+  size(displayWidth, displayHeight);
+  float xf = float(width)/1024;
   minim = new Minim(this);
   load();
 }
@@ -34,8 +35,8 @@ void wave() {
   for (int i = 0; i < player.bufferSize() - 1; i++) {
     newVolume += (abs(player.left.get(i)) + abs(player.right.get(i))); 
     stroke(255, 100);
-    line(i, amp + player.left.get(i)*amp, i+1, amp + player.left.get(i+1)*amp);
-    line(i, amp*2 + player.right.get(i)*amp, i+1, amp*2 + player.right.get(i+1)*amp);
+    line(i*xf, amp + player.left.get(i)*amp, i*xf, amp + player.left.get(i+1)*amp);
+    line(i*xf, amp*2 + player.right.get(i)*amp, i*xf, amp*2 + player.right.get(i+1)*amp);
   }
 
   if (linear) { 
@@ -43,7 +44,7 @@ void wave() {
     m = progress > .8 ? m*1.01 : 128;
     // Add offset if the screen is too dark
     a = (x/width)*m;
-    println("PROGRESS: " + progress + "\tMULT: " + m + "\tALPHA: " + a);
+    //println("PROGRESS: " + progress + "\tMULT: " + m + "\tALPHA: " + a);
   }
   else {
     float delta = newVolume-volume;

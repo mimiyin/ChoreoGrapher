@@ -32,7 +32,7 @@ void setup() {
 
 void draw() {
   noStroke();
-  fill(200);
+  fill(100);
   rect(0, 0, width, ground);
 
   if (x > width) {

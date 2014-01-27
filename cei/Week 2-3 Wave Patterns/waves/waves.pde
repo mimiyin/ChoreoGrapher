@@ -1,16 +1,17 @@
 float t = 0;
 float f = .01;
 float a = 50;
-float ao = a*2;
 float o = 0;
 
-
 float x, y;
-int freq, amp, base;
+
+int freq = -1;
+int amp = -1;
+int base = 0;
+
+String [] types = { "SIN", "COS", "TAN", "SQU", "SAW" };
 ArrayList<Wave>waves = new ArrayList<Wave>();
 boolean isModFreq, isModAmp;
-
-PrintWriter output;
 
 void setup() {
   size(800, 600);
@@ -20,12 +21,14 @@ void setup() {
   waves.add(new Tan(t, f, a, o));
   waves.add(new Square(t, f, a, o));
   waves.add(new Sawtooth(t, f, a, o));
-
-  output = createWriter("waves.txt");
 }
 
 void draw() {
   x+=.5;
+  if(x > width) {
+     background(255);
+     x = 0; 
+  }
 
   if (isModFreq && isModAmp) {
     display(height/2, waves.get(base).mod(waves.get(freq).run(), waves.get(amp).run()));
@@ -40,21 +43,15 @@ void draw() {
     display(height/2, waves.get(base).run());
   }
 
-  //  display(ao, tan.modAmp(cosine.run()));
-  //  display((height/5) + ao, cosine.run());
-  //  display(2*(height/5) + ao, tan.run());
-  //  display(3*(height/5) + ao, square.run());
-  //  display(4*(height/5) + ao, saw.run());
-  displayInstructions();
+  label();
 }
 
-void displayInstructions() {
+void label() {
   fill(0);
   rect(0, 0, width, 50);
   fill(255);
   text("PRESS 1-5 TO PICK FREQ \t\t\t 0-6 TO PICK AMP \t\t\t SPACEBAR TO CYCLE THROUGH THE BASE WAVE", 10, 20);
-
-  text("BASE: " + base + "\t\tFREQ: " + freq + "\t\tAMP: " + amp, 10, 40);
+  text("BASE: " + (base >= 0 ? types[base] : base) + "\t\tFREQ: " + (freq >= 0 ? types[freq] : freq) + "\t\tAMP: " + (amp >= 0 ? types[amp] : amp), 10, 40);
 }
 
 void display(float yoff, float y) {
@@ -65,16 +62,10 @@ void display(float yoff, float y) {
 }
 
 void keyPressed() {
-  if (keyCode == ENTER) {
-    output.flush();  // Writes the remaining data to the file
-    output.close();  // Finishes the file
-    exit();  // Stops the program
-  }
   // SPACEBAR
   if (key == 32) {
     base++;
     base%=5;
-    output.println(x + "," + base);
   } 
   else if (key == '`') {
     isModFreq = false;
@@ -90,11 +81,9 @@ void keyPressed() {
       if (num < 6) {
         isModFreq = true;
         freq = num;
-        output.println(x + "," + freq);
       }
       else if (num < 10) {
         amp = 9-num;
-        output.println(x + "," + amp);
       }
     }
   }

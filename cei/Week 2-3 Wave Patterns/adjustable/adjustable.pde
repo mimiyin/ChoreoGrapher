@@ -24,16 +24,16 @@ void draw() {
 void keyPressed() {
   switch(keyCode) {
   case UP:
-    f++;
-    break;
-  case DOWN:
-    f--;
-    break;
-  case RIGHT:
     a++;
     break;
-  case LEFT:
+  case DOWN:
     a--;
+    break;
+  case RIGHT:
+    f++;
+    break;
+  case LEFT:
+    f--;
     break;
   }
 }

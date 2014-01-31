@@ -5,7 +5,7 @@ This class is for anyone trying to use code to tell a story, compose music, or e
 You will be working from code examples and simple interfaces I will create to help you play with different computational techniques. Our aim isn't to invent fancy new algorithms. Instead we're using computation and programming as a tool to help us decode the mechanisms that drive compelling emotional arcs.
 More details to come! [Full description.](#full)
 
-Have questions? Email me at mimi.yin@nyu.edu
+Have questions? Email me at mimi.yin@nyu.edu | Sign up for [Office Hours](https://itp.nyu.edu/inwiki/Signup/Mimi)
 
 ## Syllabus (Work in Progress)
 ###Week 1: Seeing, Hearing, Sensing, Feeling Through the Lens of Patterns
@@ -13,59 +13,79 @@ Have questions? Email me at mimi.yin@nyu.edu
 - What does it mean to compose narrative arc computationally?
 - What is a pattern? When does a pattern cease to be a pattern?
 - Can patterns be emotional?
+- [Notes](https://github.com/mimiyin/coding-for-emotional-impact/wiki/Week-1)
 
-##### HW 1: Collect 100 examples of compelling pattern-driven compositions. Pick 10 to talk about in class the following week.
+####Homework: Create your own human "chamber music" piece.
+- Duration: **1-5 minutes**
+- Collect 5-6 patterns from the "real world" to contribute to your group. They can be images, sound, video clips, objects, etc. Document your patterns in your blog post and write 1-2 sentences on the emotional impact of each pattern.
+- The piece does not have to be sound-based, but it must be a live performance.
+- You can make use of mechanical devices: metronomes, lightswitches, fans, etc...
+- You may want to consider having a conductor, but that is not required.
+- **Rehearse** your piece in front of at least 2 other people.
+- Document the rehearsal on video.
+- Submit a link to your blog post (you only need 1 per group) to the [Homework Wiki](https://github.com/mimiyin/coding-for-emotional-impact/wiki/Homework)
 
+
+### Week 2
+- Defining relationships with ratios and proportions...applied to space, time and color.
+- Review of PVectors: [Nature of Code Videos 1.1 - 1.4](http://video.natureofcode.com/)
+- Review Basic Trigonometry: [Khan Video](https://www.khanacademy.org/math/trigonometry/basic-trigonometry/basic_trig_ratios/v/basic-trigonometry) | [Nature of Code Video 3.2](http://video.natureofcode.com/3.2/)
+- Introduction to trigonometric waves
+- Modulating scale and speed of patterns
+- Using waves to affect shape, movement and rhythm
+ 
 ### Weeks 2, 3: The Ebb and Flow of Micro Emotional Arcs
-- Drumming Exercise
-- Patterns that swell with anticipation, crest and die off
+- "Digital" patterns using booleans and modulo versus "Analog" patterns using trig functions
+- The emotional implications of certain ratios and proportions.
+- Patterns that swell with anticipation, crest and die off.
 - Repeating patterns using arithmetic and simple periodic wave functions.
-- Math Review: What is a wave function anyway?
+- Math Review: PI, radians, sine, cosine and tan.
 - Modulating wave functions with frequency and amplitude.
 - Recursive wave functions.
 
-##### HW 2: Assign an arbitrary emotion to each person. Create 3 computational interpretations of your emotion by simply animating a rectangle on the screen with a wave function. Ask at least 3 people how it makes them feel. No leading questions!
-##### HW 3: Apply it to your medium of choice. 
+##### HW 2: TBD
+##### HW 3: TBD 
 
-### Weeks 4, 5: Playing with Timing and Pacing and Pacing and Timing
-- Embodying pacing: Walking down Broadway.
-- Extending attention span.
-- Building tension.
-- Playing with the rate of change.
-- When does change become perceptible?
-- Linear versus geometric growth.
-- Introduce the Story Grapher.
-
-##### HW 4: Take your homework from Week 3 and use the Story Grapher to generate 10 more interpretations, this time try to interpret at least 3 distinct emotions. 
-##### HW 5: Apply to your medium of choice.
-
-### Week 6: DisrupInterruption
+### Week 4: DisrupInterruption
 - How do you establish a pattern?
 - Once you've established it, how do you break it?
 - What is monotony? What is surprise?
 - Defining ratios and proportions with linear and non-linear scaling.
 - Judicious use of random() and noise().
 
-##### HW 6: Apply to your medium of choice.
+##### HW 4: TBD
 
-### Week 7: Unpredictaprobability
+### Week 5: Unpredictaprobability
 - Using probability to generate "unpredictable" patterns that disorient and destabilize.
 
-##### HW 7: Apply to your medium of choice.
+##### HW 5: TBD
 
-### Week 8: Momentous Occasions and Catastrophic Events
+### Weeks 6, 7: Playing with Timing and Pacing and Pacing and Timing
+- Embodying pacing: Walking down Broadway.
+- Extending attention span.
+- Building tension.
+- Playing with the rate of change.
+- When does change become perceptible?
+- Linear versus geometric growth.
+- Storygrapher.
+- Non-linear scoring. Pong and Pinatas.
+
+##### HW 6: TBD
+##### HW 7: TBD
+
+
+##### HW 8: TBD
+
+### Week 8,9: Pulling It All Together
+- A polyphonic model for composing narrative and emotional arc.
+- Polygrapher
+
+### Week 10: Momentous Occasions and Catastrophic Events
 - Establishing landmark events.
 - Building up to a grand finale.
 - Orchestrating a disaster.
 - Defining conditions to set thresholds.
-
-##### HW 8: Apply to your medium of choice.
-
-### Week 9,10: Pulling It All Together
-- A polyphonic model for composing narrative and emotional arc.
-
-##### HW 9: Design 3 models for your final project proposal.
-##### HW 10: Pick 1 of your designs and flesh it out.
+- Orchestrating moral dilemmas.
 
 ### Week 11: Small group presentations / discussions of final project.
 

@@ -27,30 +27,34 @@ void setup() {
   background(255);
   MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.    
   myBus = new MidiBus(this, -1, "Java Sound Synthesizer"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
+
+  println("Press TAB to change modes.");
+  println("Use UP/DOWN to adjust intervals in manual mode.");
+  println("Press ENTER to toggle sound mode.");
+  delay(5000);
 }
 
 void draw() {
-  
+
+  if (x-prevX >= interval) {
+    fill(0);
+    rect(x, y, w, h);
+    interval = calc(mode);
+    prevX = x;
+  }
   // SOUND VERSION
   if (sound) {
-    if (x-prevX >= interval) {
-      fill(0);
-      rect(x, y, w, h);
-      interval = calc(mode);
-      prevX = x;
+    // Sound version
+    myBus.sendNoteOff(channel, pitch, velocity);
+    myBus.sendNoteOn(channel, pitch, velocity); // Send a Midi noteOn
 
-      // Sound version
-      myBus.sendNoteOff(channel, pitch, velocity);
-      myBus.sendNoteOn(channel, pitch, velocity); // Send a Midi noteOn
-    }
     x++;
   }
   // VISUAL VERSION
   else {
-    interval = calc(mode);
     x+=interval;
   }
-  
+
   // WRAP AROUND
   if (x > width) {
     y += h;

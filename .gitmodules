@@ -4,3 +4,6 @@
 [submodule "cei/StoryGrapher"]
 	path = cei/StoryGrapher
 	url = https://github.com/mimiyin/StoryGrapher.git
+[submodule "cei/Week 4-5 Timing and Pacing/StoryGrapher"]
+	path = cei/Week 4-5 Timing and Pacing/StoryGrapher
+	url = https://github.com/mimiyin/StoryGrapher.git

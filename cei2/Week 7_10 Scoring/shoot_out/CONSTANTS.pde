@@ -1,0 +1,11 @@
+enum Actions { RUN, DRAW, MERCY, HOLDUP, MAIM, SHOOT, STEAL, BEG, CON, PROPOSITION, THREATEN }
+
+enum Reactions { FEAR, RIGHTEOUSNESS, PATIENCE, SYMPATHY, PRAGMATISM } 
+
+enum Reputation { FAME, POWER, LIKEABILITY }
+
+float POINT_OF_NO_RETURN = 0.95;
+
+//Theoretical, unused
+enum Skills { FITNESS, TALKIN, WIT }
+
